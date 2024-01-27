@@ -1,3 +1,6 @@
+//Derek Dorr
+//CS566
+//01/27/2024
 #include <GL/glut.h>
 #include <cmath>
 #include <iostream>
@@ -251,7 +254,7 @@ int main( int argc, char** argv )
     // Initial parameters for window position and size
     glutInitWindowPosition( 60, 60 );
     glutInitWindowSize( 360, 360 );
-    glutCreateWindow("Assignment 0");
+    glutCreateWindow("Derek Dorr: Assignment 0");
 
     // Initialize OpenGL parameters.
     initRendering();
