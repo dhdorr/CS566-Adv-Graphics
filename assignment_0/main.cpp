@@ -10,6 +10,8 @@ using namespace std;
 int colorIncrementer = 0;
 float lightPosX = 1.0f;
 float lightPosY = 1.0f;
+int MAX_BUFFER_SIZE = 128;
+
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
 
@@ -176,6 +178,41 @@ void reshapeFunc(int w, int h)
 void loadInput()
 {
 	// load the OBJ file here
+    Vector3f v;
+    vector<unsigned> f;
+    char buffer[MAX_BUFFER_SIZE];
+    int count = 0;
+
+    while (cin.getline(buffer, MAX_BUFFER_SIZE)) {
+        count++;
+
+        stringstream ss(buffer);
+        string s;
+
+        ss >> s;
+        if (s == "v") {
+            ss >> v[0] >> v[1] >> v[2];
+
+            cout << "v line number: " << count << " == " << v[0] << ", " << v[1] << ", " << v[2] << "\n";
+
+            vecv.push_back(v);
+
+        } else if (s == "vn") {
+            ss >> v[0] >> v[1] >> v[2];
+
+            cout << "vn line number: " << count << " == " << v[0] << ", " << v[1] << ", " << v[2] << "\n";
+
+            vecn.push_back(v);
+        } else if (s == "f") {
+            unsigned test;
+            ss >> test;
+            f.push_back(test);
+
+            cout << "f line number: " << count << " == " << f[0] << "\n";
+
+            vecf.push_back(f);
+        }
+    }
 }
 
 // Main routine.
