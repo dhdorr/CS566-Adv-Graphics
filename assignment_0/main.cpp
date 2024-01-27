@@ -7,7 +7,7 @@
 using namespace std;
 
 // Globals
-
+int colorIncrementer = 0;
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
 
@@ -40,7 +40,9 @@ void keyboardFunc( unsigned char key, int x, int y )
         break;
     case 'c':
         // add code to change color here
-		cout << "Unhandled key press " << key << "." << endl; 
+		
+        colorIncrementer = (colorIncrementer + 1) % 4;
+        cout << "Color Choice: " << colorIncrementer << "." << endl;
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
@@ -105,7 +107,7 @@ void drawScene(void)
                                  {0.3, 0.8, 0.9, 1.0} };
     
 	// Here we use the first color entry as the diffuse color
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffColors[0]);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffColors[colorIncrementer]);
 
 	// Define specular color and shininess
     GLfloat specColor[] = {1.0, 1.0, 1.0, 1.0};
