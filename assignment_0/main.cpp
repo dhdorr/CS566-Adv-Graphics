@@ -8,6 +8,8 @@ using namespace std;
 
 // Globals
 int colorIncrementer = 0;
+float lightPosX = 1.0f;
+float lightPosY = 1.0f;
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
 
@@ -42,7 +44,7 @@ void keyboardFunc( unsigned char key, int x, int y )
         // add code to change color here
 		
         colorIncrementer = (colorIncrementer + 1) % 4;
-        cout << "Color Choice: " << colorIncrementer << "." << endl;
+        cout << "Color Index: " << colorIncrementer << "." << endl;
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
@@ -59,20 +61,28 @@ void specialFunc( int key, int x, int y )
     switch ( key )
     {
     case GLUT_KEY_UP:
-        // add code to change light position
-		cout << "Unhandled key press: up arrow." << endl;
+        // add code to change light position		
+        lightPosY += 0.5f;
+        cout << "Move light UP: " << lightPosY << endl;
+
 		break;
     case GLUT_KEY_DOWN:
         // add code to change light position
-		cout << "Unhandled key press: down arrow." << endl;
+        lightPosY -= 0.5f;
+		cout << "Move light DOWN" << lightPosY << endl;
+        
 		break;
     case GLUT_KEY_LEFT:
         // add code to change light position
-		cout << "Unhandled key press: left arrow." << endl;
+        lightPosX -= 0.5f;
+		cout << "Move light LEFT" << lightPosX << endl;
+        
 		break;
     case GLUT_KEY_RIGHT:
         // add code to change light position
-		cout << "Unhandled key press: right arrow." << endl;
+        lightPosX += 0.5f;
+		cout << "Move light RIGHT" << lightPosX << endl;
+        
 		break;
     }
 
@@ -122,7 +132,7 @@ void drawScene(void)
     // Light color (RGBA)
     GLfloat Lt0diff[] = {1.0,1.0,1.0,1.0};
     // Light position
-	GLfloat Lt0pos[] = {1.0f, 1.0f, 5.0f, 1.0f};
+	GLfloat Lt0pos[] = {lightPosX, lightPosY, 5.0f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
     glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
