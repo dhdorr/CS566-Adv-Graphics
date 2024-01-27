@@ -69,19 +69,19 @@ void specialFunc( int key, int x, int y )
     case GLUT_KEY_DOWN:
         // add code to change light position
         lightPosY -= 0.5f;
-		cout << "Move light DOWN" << lightPosY << endl;
+		cout << "Move light DOWN: " << lightPosY << endl;
         
 		break;
     case GLUT_KEY_LEFT:
         // add code to change light position
         lightPosX -= 0.5f;
-		cout << "Move light LEFT" << lightPosX << endl;
+		cout << "Move light LEFT: " << lightPosX << endl;
         
 		break;
     case GLUT_KEY_RIGHT:
         // add code to change light position
         lightPosX += 0.5f;
-		cout << "Move light RIGHT" << lightPosX << endl;
+		cout << "Move light RIGHT: " << lightPosX << endl;
         
 		break;
     }
