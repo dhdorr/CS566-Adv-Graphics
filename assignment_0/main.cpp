@@ -141,7 +141,30 @@ void drawScene(void)
 
 	// This GLUT method draws a teapot.  You should replace
 	// it with code which draws the object you loaded.
-	glutSolidTeapot(1.0);
+	//glutSolidTeapot(1.0);
+    
+    for (int k = 0; k < vecf.size(); k++) {
+        glBegin(GL_TRIANGLES);
+
+        int a = vecf[k][0] - 1;
+        int b = vecf[k][1] - 1;
+        int c = vecf[k][2] - 1;
+        int d = vecf[k][3] - 1;
+        int e = vecf[k][4] - 1;
+        int f = vecf[k][5] - 1;
+        int g = vecf[k][6] - 1;
+        int h = vecf[k][7] - 1;
+        int i = vecf[k][8] - 1;
+
+        glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
+        glVertex3d(vecv[a][0], vecv[a][1], vecv[a][2]);
+        glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
+        glVertex3d(vecv[d][0], vecv[d][1], vecv[d][2]);
+        glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
+        glVertex3d(vecv[g][0], vecv[g][1], vecv[g][2]);
+
+        glEnd();
+    }
     
     // Dump the image to the screen.
     glutSwapBuffers();
@@ -179,13 +202,9 @@ void loadInput()
 {
 	// load the OBJ file here
     Vector3f v;
-    vector<unsigned> f;
     char buffer[MAX_BUFFER_SIZE];
-    int count = 0;
 
     while (cin.getline(buffer, MAX_BUFFER_SIZE)) {
-        count++;
-
         stringstream ss(buffer);
         string s;
 
@@ -193,23 +212,26 @@ void loadInput()
         if (s == "v") {
             ss >> v[0] >> v[1] >> v[2];
 
-            cout << "v line number: " << count << " == " << v[0] << ", " << v[1] << ", " << v[2] << "\n";
-
             vecv.push_back(v);
 
         } else if (s == "vn") {
             ss >> v[0] >> v[1] >> v[2];
 
-            cout << "vn line number: " << count << " == " << v[0] << ", " << v[1] << ", " << v[2] << "\n";
-
             vecn.push_back(v);
         } else if (s == "f") {
-            unsigned test;
-            ss >> test;
-            f.push_back(test);
+            string faceLine;
+            vector<unsigned> f;
 
-            cout << "f line number: " << count << " == " << f[0] << "\n";
-
+            while (getline(ss, faceLine, ' ')) {
+                string elems;
+                ss >> elems;
+                istringstream tokenStream(elems);
+                string number;
+                while (getline(tokenStream, number, '/')) {                    
+                    unsigned elemUInt = stoul(number);
+                    f.push_back(elemUInt);
+                }
+            }
             vecf.push_back(f);
         }
     }
