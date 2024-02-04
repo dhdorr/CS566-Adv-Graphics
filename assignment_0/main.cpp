@@ -14,7 +14,7 @@ int colorIncrementer = 0;
 float lightPosX = 1.0f;
 float lightPosY = 1.0f;
 int MAX_BUFFER_SIZE = 128;
-
+float testme = 0.0;
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
 
@@ -99,6 +99,7 @@ void specialFunc( int key, int x, int y )
 void drawScene(void)
 {
     int i;
+    
 
     // Clear the rendering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,6 +107,12 @@ void drawScene(void)
     // Rotate the image
     glMatrixMode( GL_MODELVIEW );  // Current matrix affects objects positions
     glLoadIdentity();              // Initialize to the identity
+
+    //glPushMatrix();
+    glRotatef(testme, 0, 0, 1);
+    //glPopMatrix();
+    testme += 10.0;
+    //drawScene();
 
     // Position the camera at [0,0,5], looking at [0,0,0],
     // with [0,1,0] as the up direction.
@@ -116,10 +123,10 @@ void drawScene(void)
     // Set material properties of object
 
 	// Here are some colors you might use - feel free to add more
-    GLfloat diffColors[4][4] = { {0.5, 0.5, 0.9, 1.0},
-                                 {0.9, 0.5, 0.5, 1.0},
-                                 {0.5, 0.9, 0.3, 1.0},
-                                 {0.3, 0.8, 0.9, 1.0} };
+    GLfloat diffColors[4][4] = { {0.2, 0.5, 0.9, 1.0},
+                                 {0.9, 0.9, 0.5, 1.0},
+                                 {0.5, 0.2, 0.3, 1.0},
+                                 {0.3, 0.8, 0.1, 1.0} };
     
 	// Here we use the first color entry as the diffuse color
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffColors[colorIncrementer]);
@@ -168,10 +175,12 @@ void drawScene(void)
 
         glEnd();
     }
+
+    
     
     // Dump the image to the screen.
     glutSwapBuffers();
-
+    
 
 }
 
