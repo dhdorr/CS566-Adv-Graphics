@@ -30,11 +30,41 @@ Surface makeSurfRev(const Curve &profile, unsigned steps)
     }
 
     // TODO: Here you should build the surface.  See surf.h for details.
-
+    
     cerr << "\t>>> makeSurfRev called (but not implemented).\n\t>>> Returning empty surface." << endl;
  
     return surface;
 }
+
+Vector3f transformProfilePoint(const Vector3f &profilePoint, const Vector3f &sweepPos, const Vector3f &sweepTangent, const Vector3f &sweepNormal, const Vector3f &sweepBinormal) {
+    // Create a rotation matrix from the sweep curve's frame
+    Matrix3f rotationMatrix;
+    rotationMatrix.setCol(0, sweepNormal);
+    rotationMatrix.setCol(1, sweepBinormal);
+    rotationMatrix.setCol(2, sweepTangent);
+
+    // Transform the profile point using the rotation matrix and translate it
+    Vector3f transformedPoint = rotationMatrix * profilePoint + sweepPos;
+
+    return transformedPoint;
+}
+
+Vector3f calculateNormal(const CurvePoint &profilePoint, const Vector3f &sweepTangent, const Vector3f &sweepNormal, const Vector3f &sweepBinormal) {
+    // Since the profile is on the XY plane, its normal would be in the Z direction (0, 0, 1)
+    Vector3f profileNormal(0, 0, 1); // Assuming Z is up
+
+    // Create a rotation matrix from the sweep curve's frame
+    Matrix3f rotationMatrix;
+    rotationMatrix.setCol(0, sweepNormal);
+    rotationMatrix.setCol(1, sweepBinormal);
+    rotationMatrix.setCol(2, sweepTangent);
+
+    // Rotate the profile normal
+    Vector3f transformedNormal = rotationMatrix * profileNormal;
+
+    return transformedNormal.normalized();
+}
+
 
 Surface makeGenCyl(const Curve &profile, const Curve &sweep )
 {
@@ -43,10 +73,49 @@ Surface makeGenCyl(const Curve &profile, const Curve &sweep )
     if (!checkFlat(profile))
     {
         cerr << "genCyl profile curve must be flat on xy plane." << endl;
-        exit(0);
+        //exit(0);
     }
 
     // TODO: Here you should build the surface.  See surf.h for details.
+    //
+    
+    // For each point on the sweep curve
+    for (size_t i = 0; i < sweep.size(); ++i) {
+        // Position and orientation for this section of the sweep
+        Vector3f sweepPos = sweep[i].V;
+        Vector3f sweepTangent = sweep[i].T;
+        Vector3f sweepNormal = sweep[i].N;
+        Vector3f sweepBinormal = sweep[i].B;
+
+        // For each point in the profile curve
+        for (size_t j = 0; j < profile.size(); ++j) {
+            // Transform profile point to the current position on the sweep curve
+            // This involves translating and rotating the profile points
+            Vector3f transformedVertex = transformProfilePoint(profile[j].V, sweepPos, sweepTangent, sweepNormal, sweepBinormal);
+            surface.VV.push_back(transformedVertex);
+
+            // Calculate normals for each vertex
+            Vector3f normal = calculateNormal(profile[j], sweepTangent, sweepNormal, sweepBinormal);
+            surface.VN.push_back(normal);
+        }
+    }
+
+    // Generate faces
+    unsigned profileSize = profile.size();
+    for (size_t sweepIndex = 0; sweepIndex < sweep.size() - 1; ++sweepIndex) {
+        for (size_t profileIndex = 0; profileIndex < profileSize - 1; ++profileIndex) {
+            unsigned curr = sweepIndex * profileSize + profileIndex;
+            unsigned nextProfile = curr + 1;
+            unsigned nextSweep = curr + profileSize;
+            unsigned diagonal = nextSweep + 1;
+
+            // Add two faces for each quad
+            surface.VF.push_back(Tup3u(curr, nextProfile, nextSweep));
+            surface.VF.push_back(Tup3u(nextProfile, diagonal, nextSweep));
+        }
+    }
+
+    return surface;
 
     cerr << "\t>>> makeGenCyl called (but not implemented).\n\t>>> Returning empty surface." <<endl;
 
