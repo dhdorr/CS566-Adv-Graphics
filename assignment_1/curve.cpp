@@ -41,41 +41,6 @@ Vector3f calculateBezierPoint(const std::vector<Vector3f>& P, float t) {
     return point;
 }
 
-// Helper function to compute a single point on a Bezier curve
-// Vector3f computeBSplinePoint(const vector<Vector3f>& controlPoints, float t) {
-//     // Assuming controlPoints.size() == 4 for a single segment
-//     Vector3f point(0.0f, 0.0f, 0.0f);
-//     float oneMinusT = 1.0f - t;
-//     point = oneMinusT * oneMinusT * oneMinusT * controlPoints[0] + 
-//             3 * oneMinusT * oneMinusT * t * controlPoints[1] + 
-//             3 * oneMinusT * t * t * controlPoints[2] + 
-//             t * t * t * controlPoints[3];
-//     return point;
-// }
-    
-// // Helper function to compute a single point on a Bezier curve
-// Vector3f computeBezierPoint(const vector<Vector3f>& controlPoints, float t) {
-//     // Assuming controlPoints.size() == 4 for a single segment
-//     Vector3f point(0.0f, 0.0f, 0.0f);
-//     float oneMinusT = 1.0f - t;
-//     point = oneMinusT * oneMinusT * oneMinusT * controlPoints[0] + 
-//             3 * oneMinusT * oneMinusT * t * controlPoints[1] + 
-//             3 * oneMinusT * t * t * controlPoints[2] + 
-//             t * t * t * controlPoints[3];
-//     return point;
-// }
-
-// // Function to compute the derivative of a Bezier curve (for tangents)
-// Vector3f computeBezierTangent(const vector<Vector3f>& controlPoints, float t) {
-//     Vector3f tangent(0.0f, 0.0f, 0.0f);
-//     float oneMinusT = 1.0f - t;
-//     tangent = -3 * oneMinusT * oneMinusT * controlPoints[0] + 
-//               (3 * oneMinusT * oneMinusT - 6 * t * oneMinusT) * controlPoints[1] + 
-//               (6 * t * oneMinusT - 3 * t * t) * controlPoints[2] + 
-//               3 * t * t * controlPoints[3];
-//     return tangent.normalized(); // Ensure it's a unit vector
-// }
-
 Curve evalBezier( const vector< Vector3f >& P, unsigned steps )
 {
     // Check
@@ -112,78 +77,7 @@ Curve evalBezier( const vector< Vector3f >& P, unsigned steps )
     }
 
     cerr << "\t>>> Steps (type steps): " << steps << endl;
-    cerr << "\t>>> Returning empty curve." << endl;
-
-    // Right now this will just return this empty curve.
-    //return Curve();
-
-    // vector<float> bCurveX;
-    // vector<float> bCurveY;
-    // vector<float> bCurveZ;
-    // float bCurveXt;
-    // float bCurveYt;
-    // float bCurveZt;
-
-    // Curve curve1;
-
-    // for(int i = 0; i <= steps; i++) {
-    //     float t = i / steps;
-    //     bCurveXt = pow((1 - t), 3) * P[0].x() + 3 * pow((1 - t), 2) * t * P[1].x() + 3 * pow((1 - t), 1) * pow(t, 2) * P[2].x() + pow(t, 3) * P[3].x();
-    //     bCurveYt = pow((1 - t), 3) * P[0].y() + 3 * pow((1 - t), 2) * t * P[1].y() + 3 * pow((1 - t), 1) * pow(t, 2) * P[2].y() + pow(t, 3) * P[3].y();
-    //     bCurveZt = pow((1 - t), 3) * P[0].z() + 3 * pow((1 - t), 2) * t * P[1].z() + 3 * pow((1 - t), 1) * pow(t, 2) * P[2].z() + pow(t, 3) * P[3].z();
-    
-    //     bCurveX.push_back(bCurveXt);
-    //     bCurveY.push_back(bCurveYt);
-    //     bCurveZ.push_back(bCurveZt);
-
-    //     Vector3f tangent = computeBezierTangent(P, t);
-
-    //     // Initialize normal and binormal
-    //     Vector3f normal(0.0f, 0.0f, 0.0f);
-    //     Vector3f binormal(0.0f, 0.0f, 0.0f);
-
-    //     if (i == 0) {
-    //         // For the first point, choose an arbitrary normal
-    //         normal = Vector3f(0.0f, 0.0f, 1.0f); // This is arbitrary and might need adjustment
-    //     } else {
-    //         // Compute normal and binormal based on previous tangent and binormal
-    //         normal = Vector3f::cross(curve1.back().B, tangent).normalized();
-    //     }
-    //     binormal = Vector3f::cross(tangent, normal).normalized();
-
-    //     // Append the computed CurvePoint to the curve
-    //     //curve1.push_back({point, tangent, normal, binormal});
-    // }
-
-    // Chat GPT created this...
-    // Curve curve;
-
-    // for (size_t i = 0; i < P.size(); i += steps) {
-
-    //     for (unsigned step = 0; step <= steps; ++step) {
-    //         float t = step / static_cast<float>(steps);
-    //         Vector3f point = computeBezierPoint(P, t);
-    //         Vector3f tangent = computeBezierTangent(P, t);
-
-    //         // Initialize normal and binormal
-    //         Vector3f normal(0.0f, 0.0f, 0.0f);
-    //         Vector3f binormal(0.0f, 0.0f, 0.0f);
-
-    //         if (step == 0) {
-    //             // For the first point, choose an arbitrary normal
-    //             normal = Vector3f(0.0f, 0.0f, 1.0f); // This is arbitrary and might need adjustment
-    //         } else {
-    //             // Compute normal and binormal based on previous tangent and binormal
-    //             normal = Vector3f::cross(curve.back().B, tangent).normalized();
-    //         }
-    //         binormal = Vector3f::cross(tangent, normal).normalized();
-
-    //         // Append the computed CurvePoint to the curve
-    //         curve.push_back({point, tangent, normal, binormal});
-    //     }
-    // }
-
-    // return curve;
+    //cerr << "\t>>> Returning empty curve." << endl;
 
 
     Curve curve;
@@ -243,18 +137,7 @@ Curve evalBspline( const vector< Vector3f >& P, unsigned steps )
     }
 
     cerr << "\t>>> Steps (type steps): " << steps << endl;
-    cerr << "\t>>> Returning empty curve." << endl;
-
-    // Return an empty curve right now.
-    //return Curve();
-    // vector<Vector3f> helpme;
-    // for (int i = 0; i < steps; i++) { 
-    //     float t = i / static_cast<float>(steps);
-    //     Vector3f testP = P[i] * t;
-    //     helpme.push_back(testP);
-    // }
-    // vector<CurvePoint> testme = evalBezier(P, steps);
-    // return testme;
+    //cerr << "\t>>> Returning empty curve." << endl;
 
     // Container for the converted Bezier control points
     std::vector<Vector3f> bezierControlPoints;
