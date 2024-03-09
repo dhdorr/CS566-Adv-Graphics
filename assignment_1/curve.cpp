@@ -19,17 +19,14 @@ namespace
     
 }
 
-// Helper function to compute factorial
 int factorial(int n) {
     return (n <= 1) ? 1 : n * factorial(n - 1);
 }
 
-// Helper function for binomial coefficient
 int binomialCoefficient(int n, int k) {
     return factorial(n) / (factorial(k) * factorial(n - k));
 }
 
-// Helper function to calculate a point on the Bezier curve
 Vector3f calculateBezierPoint(const std::vector<Vector3f>& P, float t) {
     Vector3f point(0.0f, 0.0f, 0.0f);
     int n = P.size() - 1; // Degree of the curve
@@ -81,31 +78,24 @@ Curve evalBezier( const vector< Vector3f >& P, unsigned steps )
 
 
     Curve curve;
-    // Loop through each segment
     for (size_t i = 0; i < P.size() - 1; i += 3) {
         std::vector<Vector3f> controlPoints(P.begin() + i, P.begin() + i + 4);
         for (unsigned step = 0; step <= steps; ++step) {
             float t = (float)step / (float)steps;
-            // Calculate the vertex
             Vector3f V = calculateBezierPoint(controlPoints, t);
 
-            // Calculate the tangent, which is the derivative of V
             Vector3f T = 3 * pow(1 - t, 2) * (controlPoints[1] - controlPoints[0]) +
                          6 * (1 - t) * t * (controlPoints[2] - controlPoints[1]) +
                          3 * pow(t, 2) * (controlPoints[3] - controlPoints[2]);
             T.normalize();
 
-            // Assume an arbitrary normal for the first point
             Vector3f N = (step == 0) ? Vector3f(1, 0, 0) : curve.back().N;
-            // Correct the normal to be orthogonal to T
             N = Vector3f::cross(Vector3f::cross(T, N), T);
             N.normalize();
 
-            // Calculate the binormal
             Vector3f B = Vector3f::cross(T, N);
             B.normalize();
 
-            // Add the curve point to the curve
             curve.push_back({V, T, N, B});
         }
     }

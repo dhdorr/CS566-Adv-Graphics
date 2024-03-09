@@ -23,11 +23,10 @@ Matrix3f getRotationMatrixY(float angle) {
     float c = cos(angle);
     float s = sin(angle);
 
-    // Constructing the rotation matrix around the Y-axis
     return Matrix3f(
-        c, 0.0f, s,  // First column
-        0.0f, 1.0f, 0.0f, // Second column (unchanged Y-axis)
-        -s, 0.0f, c  // Third column
+        c, 0.0f, s,  
+        0.0f, 1.0f, 0.0f, 
+        -s, 0.0f, c  
     );
 }
 
@@ -44,17 +43,14 @@ Surface makeSurfRev(const Curve &profile, unsigned steps)
 
     float angleStep = 2 * M_PI / steps; // Angle step in radians
 
-    // Generate vertices and normals by rotating the profile curve
     for (unsigned step = 0; step <= steps; ++step) {
         float angle = step * angleStep;
         Matrix3f rotationMatrix = getRotationMatrixY(angle);
 
         for (int c = 0; c < static_cast<int>(profile.size()) -1; c++) {
-            // Rotate point around the Y-axis
             Vector3f rotatedPoint = rotationMatrix * profile[c].V;
             surface.VV.push_back(rotatedPoint);
 
-            // Calculate normal for the rotated point
             Vector3f normal = rotationMatrix * Vector3f(-sin(angle), 0, cos(angle)); // Assuming profile curve normals point outwards
             surface.VN.push_back(normal.normalized());
         }
@@ -66,7 +62,6 @@ Surface makeSurfRev(const Curve &profile, unsigned steps)
         for (unsigned i = 0; i < profileSize - 1; ++i) {
             unsigned curr = step * profileSize + i;
             unsigned next = curr + profileSize;
-            // Connect the current segment to the next, making sure to loop back at the end
             surface.VF.push_back(Tup3u(curr, next, curr + 1));
             surface.VF.push_back(Tup3u(curr + 1, next, next + 1));
         }
@@ -82,14 +77,12 @@ Vector3f transformProfilePoint(const Vector3f &profilePoint, const Vector3f &swe
     rotationMatrix.setCol(1, sweepBinormal);
     rotationMatrix.setCol(2, sweepTangent);
 
-    // Transform the profile point using the rotation matrix and translate it
     Vector3f transformedPoint = rotationMatrix * profilePoint + sweepPos;
 
     return transformedPoint;
 }
 
 Vector3f calculateNormal(const CurvePoint &profilePoint, const Vector3f &sweepTangent, const Vector3f &sweepNormal, const Vector3f &sweepBinormal) {
-    // Since the profile is on the XY plane, its normal would be in the Z direction (0, 0, 1)
     Vector3f profileNormal(0, 0, 1); // Assuming Z is up
 
     // Create a rotation matrix from the sweep curve's frame
