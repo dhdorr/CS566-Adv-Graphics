@@ -112,20 +112,20 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 	if (parent != m_rootJoint) {
 		Matrix4f testme = parent->transform;
 
-		float test_diff_y = abs( m_matrixStack.top().getCol(3).y() - testme.getCol(3).y());
-		float test_diff_x = abs( m_matrixStack.top().getCol(3).x() - testme.getCol(3).x());
-		float test_diff_z = abs( m_matrixStack.top().getCol(3).z() - testme.getCol(3).z());
+		float test_diff_y = testme.getCol(3).y();
+		float test_diff_x = testme.getCol(3).x();
+		float test_diff_z = testme.getCol(3).z();
 		float test_diff_distance = sqrt(pow(test_diff_x, 2.0f) + pow(test_diff_y, 2.0f) + pow(test_diff_z, 2.0f));
-		// cout << "test diff distance: " << test_diff_distance << endl;
+
+		cout << "test size: " << test_diff_distance << endl;
 
 		m_matrixStack.push(m_matrixStack.top() * testme);
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.0f + test_diff_distance, 1.0f));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, test_diff_distance/0.05f, 1.0f));
 		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation( 0.0f, -0.025f, 0.0f));
-		
-		
 
 		glLoadMatrixf(m_matrixStack.top());
 		glutSolidCube(0.05f);
+
 		m_matrixStack.pop();
 		m_matrixStack.pop();
 
@@ -133,7 +133,7 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 
 
 	for( int i = 0; i < parent->children.size(); i++) {
-		
+
 		recursiveDrawSkeleton(parent->children[i]);
 		m_matrixStack.pop();
 
@@ -146,6 +146,7 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 void SkeletalModel::drawSkeleton( )
 {
 	// Draw boxes between the joints. You will need to add a recursive helper function to traverse the joint hierarchy.
+	
 	recursiveDrawSkeleton(m_rootJoint);
 }
 
