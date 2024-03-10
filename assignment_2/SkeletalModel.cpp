@@ -42,6 +42,35 @@ void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
 void SkeletalModel::loadSkeleton( const char* filename )
 {
 	// Load the skeleton from file here.
+	ifstream file(filename);
+	string line;
+	bool rootIdentified = false;
+
+	if (file.is_open()) {
+		while (getline(file, line)) {
+			cout << line << endl;
+			istringstream iss(line);
+			vector<float> floats;
+			float temp;
+
+			while (iss >> temp) {
+				floats.push_back(temp);
+			}
+
+			Joint *joint = new Joint;
+			joint->transform.translation(Vector3f(floats[0], floats[1], floats[2]));
+			m_joints.push_back(joint);
+			m_matrixStack.push(joint->transform);
+
+			if (!rootIdentified && floats[3] == float(-1)) {
+				rootIdentified = true;
+				m_rootJoint = joint;
+			}
+		}
+		file.close();
+	} else {
+		cout << "Unable to open file: " << filename << endl;
+	}
 }
 
 void SkeletalModel::drawJoints( )
@@ -55,6 +84,9 @@ void SkeletalModel::drawJoints( )
 	// (glPushMatrix, glPopMatrix, glMultMatrix).
 	// You should use your MatrixStack class
 	// and use glLoadMatrix() before your drawing call.
+	for(int i = 0; i < 6; i++) {
+		glutSolidSphere( 0.025f, 12, 12 );
+	}
 }
 
 void SkeletalModel::drawSkeleton( )
