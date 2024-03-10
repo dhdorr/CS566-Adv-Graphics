@@ -92,14 +92,24 @@ void SkeletalModel::drawJoints( )
 	// You should use your MatrixStack class
 	// and use glLoadMatrix() before your drawing call.
 
-	m_matrixStack.push(m_matrixStack.top() * m_joints[0]->transform);
+
+	m_matrixStack.push(m_matrixStack.top() * m_rootJoint->transform);
 	for(int i = 1; i < m_joints.size(); i++) {
-		for (int j = 0; j < m_joints[i]->children.size(); j++) {
-			// m_matrixStack.push( m_joints[i]->transform * m_joints[i]->children[j]->transform);
-			// glLoadMatrixf(m_matrixStack.top());
-			// glutSolidSphere( 0.025f, 12, 12 );
-			// m_matrixStack.pop();
+		for(int k = 0; k < m_joints.size(); k++) {
+			for (int t = 0; t < m_joints[k]->children.size(); ++t) {
+				if (m_joints[k]->children[t] == m_joints[i]) {
+					m_matrixStack.push(m_matrixStack.top() * m_joints[k]->children[t]->transform);
+				}
+			}
+			
 		}
+
+		// for (int j = m_joints[i]->children.size()-1; j > 0; j--) {
+		// 	m_matrixStack.push(m_matrixStack.top() * m_joints[i]->children[j]->transform);
+		// 	// glLoadMatrixf(m_matrixStack.top());
+		// 	// glutSolidSphere( 0.025f, 12, 12 );
+		// 	// m_matrixStack.pop();
+		// }
 		m_matrixStack.push(m_matrixStack.top() * m_joints[i]->transform);
 		glLoadMatrixf(m_matrixStack.top());
 		glutSolidSphere( 0.025f, 12, 12 );
@@ -108,6 +118,15 @@ void SkeletalModel::drawJoints( )
 		// 	m_matrixStack.pop();
 		// }
 		m_matrixStack.pop();
+
+		for(int k = 0; k < m_joints.size(); k++) {
+			for (int t = 0; t < m_joints[k]->children.size(); ++t) {
+				if (m_joints[k]->children[t] == m_joints[i]) {
+					m_matrixStack.pop();
+				}
+			}
+			
+		}
 	}
 
 	//cout << "joint" << endl;
