@@ -103,20 +103,10 @@ void SkeletalModel::drawJoints( )
 			}
 			
 		}
-
-		// for (int j = m_joints[i]->children.size()-1; j > 0; j--) {
-		// 	m_matrixStack.push(m_matrixStack.top() * m_joints[i]->children[j]->transform);
-		// 	// glLoadMatrixf(m_matrixStack.top());
-		// 	// glutSolidSphere( 0.025f, 12, 12 );
-		// 	// m_matrixStack.pop();
-		// }
 		m_matrixStack.push(m_matrixStack.top() * m_joints[i]->transform);
 		glLoadMatrixf(m_matrixStack.top());
 		glutSolidSphere( 0.025f, 12, 12 );
 
-		// for (int j = 0; j < m_joints[i]->children.size(); j++) {
-		// 	m_matrixStack.pop();
-		// }
 		m_matrixStack.pop();
 
 		for(int k = 0; k < m_joints.size(); k++) {
@@ -129,19 +119,6 @@ void SkeletalModel::drawJoints( )
 		}
 	}
 
-	//cout << "joint" << endl;
-	//m_joints[0]->transform.print();
-	//cout << "matrix pre" << endl;
-	//m_matrixStack.top().print();
-	//m_matrixStack.push(m_matrixStack.top() * m_joints[0]->transform);
-	//cout << "matrix post" << endl;
-	//m_matrixStack.top().print();
-	// cout << "TESTING" << endl;
-	// Matrix4f testing = m_matrixStack.top() * m_joints[0]->transform;
-	// testing.print();
-
-	// glLoadMatrixf(m_matrixStack.top());
-	// glutSolidSphere( 0.025f, 12, 12 );
 }
 
 void SkeletalModel::drawSkeleton( )
