@@ -80,6 +80,18 @@ void SkeletalModel::loadSkeleton( const char* filename )
 	}
 }
 
+void SkeletalModel::recursiveDrawJoints(Joint* parent) {
+	m_matrixStack.push(m_matrixStack.top() * parent->transform);
+	glLoadMatrixf(m_matrixStack.top());
+	glutSolidSphere( 0.025f, 12, 12 );
+
+	for( int i = 0; i < parent->children.size(); i++) {
+		recursiveDrawJoints(parent->children[i]);
+		m_matrixStack.pop();
+	}
+
+}
+
 void SkeletalModel::drawJoints( )
 {
 	// Draw a sphere at each joint. You will need to add a recursive helper function to traverse the joint hierarchy.
@@ -92,32 +104,7 @@ void SkeletalModel::drawJoints( )
 	// You should use your MatrixStack class
 	// and use glLoadMatrix() before your drawing call.
 
-
-	m_matrixStack.push(m_matrixStack.top() * m_rootJoint->transform);
-	for(int i = 1; i < m_joints.size(); i++) {
-		for(int k = 0; k < m_joints.size(); k++) {
-			for (int t = 0; t < m_joints[k]->children.size(); ++t) {
-				if (m_joints[k]->children[t] == m_joints[i]) {
-					m_matrixStack.push(m_matrixStack.top() * m_joints[k]->children[t]->transform);
-				}
-			}
-			
-		}
-		m_matrixStack.push(m_matrixStack.top() * m_joints[i]->transform);
-		glLoadMatrixf(m_matrixStack.top());
-		glutSolidSphere( 0.025f, 12, 12 );
-
-		m_matrixStack.pop();
-
-		for(int k = 0; k < m_joints.size(); k++) {
-			for (int t = 0; t < m_joints[k]->children.size(); ++t) {
-				if (m_joints[k]->children[t] == m_joints[i]) {
-					m_matrixStack.pop();
-				}
-			}
-			
-		}
-	}
+	recursiveDrawJoints(m_rootJoint);
 
 }
 
