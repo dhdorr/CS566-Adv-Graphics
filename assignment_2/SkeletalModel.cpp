@@ -108,9 +108,35 @@ void SkeletalModel::drawJoints( )
 
 }
 
+void SkeletalModel::recursiveDrawSkeleton(Joint* parent, float oldY) {
+	if (parent != m_rootJoint) {
+		Matrix4f testme = parent->transform;
+	
+		m_matrixStack.push(m_matrixStack.top() * testme);
+		//float test_y_diff = parent->transform.getCol(3).y() - oldY;
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.25f, 1.0f));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation(0.0f, -0.025f, 0.0f));
+
+		glLoadMatrixf(m_matrixStack.top());
+		glutSolidCube(0.05f);
+		m_matrixStack.pop();
+		m_matrixStack.pop();
+
+	}
+
+
+	for( int i = 0; i < parent->children.size(); i++) {
+		
+		recursiveDrawSkeleton(parent->children[i], parent->children[i]->transform.getCol(3).z() - parent->transform.getCol(3).z());
+		m_matrixStack.pop();
+	}
+
+}
+
 void SkeletalModel::drawSkeleton( )
 {
 	// Draw boxes between the joints. You will need to add a recursive helper function to traverse the joint hierarchy.
+	recursiveDrawSkeleton(m_rootJoint, 0.0f);
 }
 
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ)
