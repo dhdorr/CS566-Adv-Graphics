@@ -108,14 +108,16 @@ void SkeletalModel::drawJoints( )
 
 }
 
-void SkeletalModel::recursiveDrawSkeleton(Joint* parent, float oldY) {
+void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 	if (parent != m_rootJoint) {
 		Matrix4f testme = parent->transform;
-	
+
+		float test_diff = abs( m_matrixStack.top().getCol(3).z() - testme.getCol(3).z());
+		cout << "test diff: " << test_diff << endl;
+
 		m_matrixStack.push(m_matrixStack.top() * testme);
-		//float test_y_diff = parent->transform.getCol(3).y() - oldY;
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.25f, 1.0f));
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation(0.0f, -0.025f, 0.0f));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.0f + test_diff, 1.0f));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation( 0.0f, -0.025f, 0.0f));
 
 		glLoadMatrixf(m_matrixStack.top());
 		glutSolidCube(0.05f);
@@ -127,8 +129,11 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent, float oldY) {
 
 	for( int i = 0; i < parent->children.size(); i++) {
 		
-		recursiveDrawSkeleton(parent->children[i], parent->children[i]->transform.getCol(3).z() - parent->transform.getCol(3).z());
+		recursiveDrawSkeleton(parent->children[i]);
 		m_matrixStack.pop();
+
+		// glLoadMatrixf(m_matrixStack.top());
+		// glutSolidCube(0.05f);
 	}
 
 }
