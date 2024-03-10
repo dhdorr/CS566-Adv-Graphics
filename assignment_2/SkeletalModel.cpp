@@ -21,6 +21,7 @@ void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
 	// (after an update() occurs, when the camera moves, the window is resized, etc)
 
 	m_matrixStack.clear();
+
 	m_matrixStack.push(cameraMatrix);
 
 	if( skeletonVisible )
@@ -48,7 +49,7 @@ void SkeletalModel::loadSkeleton( const char* filename )
 
 	if (file.is_open()) {
 		while (getline(file, line)) {
-			cout << line << endl;
+			//cout << line << endl;
 			istringstream iss(line);
 			vector<float> floats;
 			float temp;
@@ -58,9 +59,15 @@ void SkeletalModel::loadSkeleton( const char* filename )
 			}
 
 			Joint *joint = new Joint;
-			joint->transform.translation(Vector3f(floats[0], floats[1], floats[2]));
+			joint->transform = joint->transform.translation(Vector3f(floats[0], floats[1], floats[2]));
+			
+			if (int(floats[3]) > -1) {
+				m_joints[int(floats[3])]->children.push_back(joint);
+			}
+				
+
 			m_joints.push_back(joint);
-			m_matrixStack.push(joint->transform);
+			//m_matrixStack.push(joint->transform);
 
 			if (!rootIdentified && floats[3] == float(-1)) {
 				rootIdentified = true;
@@ -84,9 +91,38 @@ void SkeletalModel::drawJoints( )
 	// (glPushMatrix, glPopMatrix, glMultMatrix).
 	// You should use your MatrixStack class
 	// and use glLoadMatrix() before your drawing call.
-	for(int i = 0; i < 6; i++) {
+
+	m_matrixStack.push(m_matrixStack.top() * m_joints[0]->transform);
+	for(int i = 1; i < m_joints.size(); i++) {
+		for (int j = 0; j < m_joints[i]->children.size(); j++) {
+			// m_matrixStack.push( m_joints[i]->transform * m_joints[i]->children[j]->transform);
+			// glLoadMatrixf(m_matrixStack.top());
+			// glutSolidSphere( 0.025f, 12, 12 );
+			// m_matrixStack.pop();
+		}
+		m_matrixStack.push(m_matrixStack.top() * m_joints[i]->transform);
+		glLoadMatrixf(m_matrixStack.top());
 		glutSolidSphere( 0.025f, 12, 12 );
+
+		// for (int j = 0; j < m_joints[i]->children.size(); j++) {
+		// 	m_matrixStack.pop();
+		// }
+		m_matrixStack.pop();
 	}
+
+	//cout << "joint" << endl;
+	//m_joints[0]->transform.print();
+	//cout << "matrix pre" << endl;
+	//m_matrixStack.top().print();
+	//m_matrixStack.push(m_matrixStack.top() * m_joints[0]->transform);
+	//cout << "matrix post" << endl;
+	//m_matrixStack.top().print();
+	// cout << "TESTING" << endl;
+	// Matrix4f testing = m_matrixStack.top() * m_joints[0]->transform;
+	// testing.print();
+
+	// glLoadMatrixf(m_matrixStack.top());
+	// glutSolidSphere( 0.025f, 12, 12 );
 }
 
 void SkeletalModel::drawSkeleton( )
