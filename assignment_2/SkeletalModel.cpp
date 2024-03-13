@@ -110,22 +110,36 @@ void SkeletalModel::drawJoints( )
 
 void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 	if (parent != m_rootJoint) {
+
 		Matrix4f testme = parent->transform;
 
 		float test_diff_y = testme.getCol(3).y();
 		float test_diff_x = testme.getCol(3).x();
 		float test_diff_z = testme.getCol(3).z();
-		float test_diff_distance = sqrt(pow(test_diff_x, 2.0f) + pow(test_diff_y, 2.0f) + pow(test_diff_z, 2.0f));
+		float test_mag_a = sqrt(pow(test_diff_x, 2.0f) + pow(test_diff_y, 2.0f) + pow(test_diff_z, 2.0f));
+		float test_mag_c = 1;
+		
+		float denom = test_mag_a * test_mag_c;
+		float test_cos_angle = 0.0f;
+		float test_angle = 0;
 
-		cout << "test size: " << test_diff_distance << endl;
+		if (denom != 0) {
+			test_cos_angle = Vector3f().dot(testme.getCol(3).xyz(), Vector3f(0,0,1)) / denom;
+			test_angle = acos(test_cos_angle);
+		}
+		
+		Vector3f testVec = testme.getCol(3).xyz();
+		Vector3f rotation_axis = Vector3f().cross(Vector3f(0,0,1), testVec);
 
 		m_matrixStack.push(m_matrixStack.top() * testme);
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, test_diff_distance/0.05f, 1.0f));
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation( 0.0f, -0.025f, 0.0f));
-
+		m_matrixStack.push(m_matrixStack.top() * testme.translation( -test_diff_x/2, -test_diff_y/2, -test_diff_z/2));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().rotation(rotation_axis, test_angle));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.0f, test_mag_a/0.025f));
+		
 		glLoadMatrixf(m_matrixStack.top());
-		glutSolidCube(0.05f);
+		glutSolidCube(0.025f);
 
+		m_matrixStack.pop();
 		m_matrixStack.pop();
 		m_matrixStack.pop();
 
@@ -137,8 +151,6 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 		recursiveDrawSkeleton(parent->children[i]);
 		m_matrixStack.pop();
 
-		// glLoadMatrixf(m_matrixStack.top());
-		// glutSolidCube(0.05f);
 	}
 
 }
