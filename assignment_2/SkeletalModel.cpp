@@ -165,6 +165,25 @@ void SkeletalModel::drawSkeleton( )
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ)
 {
 	// Set the rotation part of the joint's transformation matrix based on the passed in Euler angles.
+
+    // Convert Euler angles to radians
+    float radianX = rX * (180.0f / M_PI);
+    float radianY = rY * (180.0f / M_PI);
+    float radianZ = rZ * (180.0f / M_PI);
+
+    // Compute sine and cosine values for optimization
+    float cx = cos(radianX);
+    float cy = cos(radianY);
+    float cz = cos(radianZ);
+    float sx = sin(radianX);
+    float sy = sin(radianY);
+    float sz = sin(radianZ);
+
+	Matrix3f rotation_matrix = Matrix3f(Vector3f(cy * cz, -cy * sz, sy), Vector3f(cx * sz + cz * sx * sy, cx * cz - sx * sy * sz, -cy * sx), Vector3f(sx * sz - cx * cz * sy, cz * sx + cx * sy * sz, cx * cy));
+
+	m_joints[jointIndex]->transform.setSubmatrix3x3(0, 0, rotation_matrix);
+
+	m_joints[jointIndex]->transform.print();
 }
 
 
