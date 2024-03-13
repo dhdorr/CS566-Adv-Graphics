@@ -33,6 +33,9 @@ void SkeletalModel::draw(Matrix4f cameraMatrix, bool skeletonVisible)
 	else
 	{
 		// Clear out any weird matrix we may have been using for drawing the bones and revert to the camera matrix.
+		m_matrixStack.clear();
+
+		m_matrixStack.push(cameraMatrix);
 		glLoadMatrixf(m_matrixStack.top());
 
 		// Tell the mesh to draw itself.
@@ -182,7 +185,7 @@ void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float 
 	Matrix3f rotation_matrix = Matrix3f(Vector3f(cy * cz, -cy * sz, sy), Vector3f(cx * sz + cz * sx * sy, cx * cz - sx * sy * sz, -cy * sx), Vector3f(sx * sz - cx * cz * sy, cz * sx + cx * sy * sz, cx * cy));
 
 	m_joints[jointIndex]->transform.setSubmatrix3x3(0, 0, rotation_matrix);
-	
+
 }
 
 
