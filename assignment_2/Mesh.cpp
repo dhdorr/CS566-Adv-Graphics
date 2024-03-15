@@ -6,45 +6,37 @@ void Mesh::load( const char* filename )
 {
 	// 2.1.1. load() should populate bindVertices, currentVertices, and faces
 
-	// Add your code here.
 	
-	// load the OBJ file here
-	int MAX_BUFFER_SIZE = 128;
-
-	// This is the list of points (3D vectors)
-	vector<Vector3f> vecv;
-
-	// This is the list of normals (also 3D vectors)
-	vector<Vector3f> vecn;
-
-	// This is the list of faces (indices into vecv and vecn)
-	vector<vector<unsigned>> vecf;
-
     Vector3f v;
-    char buffer[MAX_BUFFER_SIZE];
 
 	ifstream file(filename);
 	string line;
-	bool rootIdentified = false;
 
 	if (file.is_open()) {
+		
 		while (getline(file, line)) {
-			istringstream iss(line);
+			istringstream piss(line);
+			char type;
 
-			string s;
+			piss >> type;
 
-			iss >> s;
-			if (s == "v") {
-				iss >> v[0] >> v[1] >> v[2];
+			if(type == 'f') {
+				uint u1;
+				uint u2;
+				uint u3;
 
-				// vecv.push_back(v);
-				bindVertices.push_back(v);
+				piss >> u1 >> u2 >> u3;
 
-			} else if (s == "f") {
-				Vector3f f;
+				faces.push_back(Tuple3u(u1, u2, u3));
 
-				iss >> f[0] >> f[1] >> f[2];
-				faces.push_back(Tuple3u(f[0], f[1], f[2]));
+			} else if (type == 'v') {
+				float f1;
+				float f2;
+				float f3;
+
+				piss >> f1 >> f2 >> f3;
+
+				bindVertices.push_back(Vector3f(f1, f2, f3));
 			}
 		}
 		file.close();
@@ -52,6 +44,7 @@ void Mesh::load( const char* filename )
 
 	// make a copy of the bind vertices as the current vertices
 	currentVertices = bindVertices;
+
 
 }
 
@@ -64,71 +57,28 @@ void Mesh::draw()
 	// rather than the analytical normals from
 	// assignment 1, the appearance is "faceted".
 
-	int i;
-    
-
-    // Clear the rendering window
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Rotate the image
-    //glMatrixMode( GL_MODELVIEW );  // Current matrix affects objects positions
-    //glLoadIdentity();              // Initialize to the identity
-
-	// gluLookAt(0.0, 0.0, 5.0,
-    //           0.0, 0.0, 0.0,
-    //           0.0, 1.0, 0.0);
-	
-	// Here are some colors you might use - feel free to add more
-    GLfloat diffColors[4][4] = { {0.2, 0.5, 0.9, 1.0},
-                                 {0.9, 0.9, 0.5, 1.0},
-                                 {0.5, 0.2, 0.3, 1.0},
-                                 {0.3, 0.8, 0.1, 1.0} };
-    
-	// Here we use the first color entry as the diffuse color
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffColors[1]);
-
-	// Define specular color and shininess
-    GLfloat specColor[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat shininess[] = {100.0};
-
-	// Note that the specular color and shininess can stay constant
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specColor);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-  
-    // Set light properties
-
-    // Light color (RGBA)
-    GLfloat Lt0diff[] = {1.0,1.0,1.0,1.0};
-    // Light position
-	float lightPosX = 1.0f;
-	float lightPosY = 1.0f;
-	GLfloat Lt0pos[] = {lightPosX, lightPosY, 5.0f, 1.0f};
-
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
-    glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
-
-
 	glBegin(GL_TRIANGLES);
  
     for (int k = 0; k < faces.size(); k++) {
 		Tuple3u face = faces[k];
+		Vector3f cvA = Vector3f(currentVertices[face[0] - 1].x(), currentVertices[face[0] - 1].y(), currentVertices[face[0] - 1].z());
+		Vector3f cvB = Vector3f(currentVertices[face[1] - 1].x(), currentVertices[face[1] - 1].y(), currentVertices[face[1] - 1].z());
+		Vector3f cvC = Vector3f(currentVertices[face[2] - 1].x(), currentVertices[face[2] - 1].y(), currentVertices[face[2] - 1].z());
 
-        glNormal3d(0, 1, 0);
-        glVertex3d(currentVertices[face[0]].x(), currentVertices[face[0]].y(), currentVertices[face[0]].z());
-        glNormal3d(1, 1, 0);
-        glVertex3d(currentVertices[face[1]].x(), currentVertices[face[1]].y(), currentVertices[face[1]].z());
-        glNormal3d(0, 1, 1);
-        glVertex3d(currentVertices[face[2]].x(), currentVertices[face[2]].y(), currentVertices[face[2]].z());
+		Vector3f normA = cvA.cross(cvA, Vector3f(0,0,1));
+		Vector3f normB = cvB.cross(cvB, Vector3f(0,0,1));
+		Vector3f normC = cvC.cross(cvC, Vector3f(0,0,1));
 
-		// cout << "test x: " << currentVertices[face[2]].z() << endl;
+        glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3d(cvA.x(), cvA.y(), cvA.z());
+        glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3d(cvB.x(), cvB.y(), cvB.z());
+        glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3d(cvC.x(), cvC.y(), cvC.z());
 
     }
 
 	glEnd();
-    
-    
-    // Dump the image to the screen.
-    // glutSwapBuffers();
 
 }
 
@@ -143,10 +93,9 @@ void Mesh::loadAttachments( const char* filename, int numJoints )
 		while (getline(file, line)) {
 			istringstream iss(line);
 
-			string s;
 			vector<float> helpmelol;
 
-			for (int i = 0; i < numJoints; i++) {
+			for (int i = 0; i < numJoints - 1; i++) {
 				float temp;
 				iss >> temp;
 				helpmelol.push_back(temp);
@@ -156,6 +105,11 @@ void Mesh::loadAttachments( const char* filename, int numJoints )
 		}
 		file.close();
 	}
-	// cout << attachments.size() << endl;
+	
+	// for (int j = 0; j < attachments[13300].size(); j++) {
+	// 	cout << attachments[13300][j] << " ";
+	// }
+	// cout << endl;
+	// // cout << attachments.back()[7] << endl;
 	// cout << numJoints << endl;
 }
