@@ -112,7 +112,9 @@ void SkeletalModel::drawJoints( )
 }
 
 void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
+
 	if (parent != m_rootJoint) {
+		
 
 		Matrix4f testme = parent->transform;
 
@@ -132,11 +134,16 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 		}
 		
 		Vector3f testVec = testme.getCol(3).xyz();
-		Vector3f rotation_axis = Vector3f().cross(Vector3f(0,0,1), testVec);
+		Matrix4f helpMe = m_matrixStack.top() * testme;
+		Vector3f testVec2 = helpMe.getCol(3).xyz();
+		Vector3f rotation_axis = Vector3f().cross(Vector3f(0,0,1), testVec.normalized());
+		Matrix4f matrix_no_rotation = Matrix4f().identity();
+		matrix_no_rotation.setCol(3, testme.getCol(3));
+
 
 		m_matrixStack.push(m_matrixStack.top() * testme);
-		m_matrixStack.push(m_matrixStack.top() * testme.translation( -test_diff_x/2, -test_diff_y/2, -test_diff_z/2));
-		m_matrixStack.push(m_matrixStack.top() * testme.identity().rotation(rotation_axis, test_angle));
+		m_matrixStack.push(m_matrixStack.top() * testme.identity().translation( -test_diff_x/2, -test_diff_y/2, -test_diff_z/2));
+		m_matrixStack.push(m_matrixStack.top() * testme.rotation(rotation_axis, test_angle));
 		m_matrixStack.push(m_matrixStack.top() * testme.identity().scaling(1.0f, 1.0f, test_mag_a/0.025f));
 		
 		glLoadMatrixf(m_matrixStack.top());
@@ -149,7 +156,8 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 	}
 
 
-	for( int i = 0; i < parent->children.size(); i++) {
+	for( int i = 0; i < parent->children.size(); ++i) {
+		
 
 		recursiveDrawSkeleton(parent->children[i]);
 		m_matrixStack.pop();
@@ -161,8 +169,13 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 void SkeletalModel::drawSkeleton( )
 {
 	// Draw boxes between the joints. You will need to add a recursive helper function to traverse the joint hierarchy.
-	
+	// cout << "called draw skelly" << endl;
 	recursiveDrawSkeleton(m_rootJoint);
+
+	// glLoadMatrixf(Matrix4f().identity().translation(Vector3f(0.0f,-1.0f,-2.0f)));
+	
+	// glutSolidCube(1.0f);
+	// glPopMatrix();
 }
 
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ)
@@ -183,8 +196,16 @@ void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float 
     float sz = sin(radianZ);
 
 	Matrix3f rotation_matrix = Matrix3f(Vector3f(cy * cz, -cy * sz, sy), Vector3f(cx * sz + cz * sx * sy, cx * cz - sx * sy * sz, -cy * sx), Vector3f(sx * sz - cx * cz * sy, cz * sx + cx * sy * sz, cx * cy));
+	// float qw = sqrt(1 + rotation_matrix.getCol(0).x() + rotation_matrix.getCol(1).y() + rotation_matrix.getCol(2).z() );
+	// float qx = (rotation_matrix.getCol(1).z() - rotation_matrix.getCol(2).y()) / (4 * qw);
+	// float qy = (rotation_matrix.getCol(2).x() - rotation_matrix.getCol(0).z()) / (4 * qw);
+	// float qz = (rotation_matrix.getCol(0).y() - rotation_matrix.getCol(1).x()) / (4 * qw);
+	
+	// m_joints[jointIndex]->transform = m_joints[jointIndex]->transform * m_joints[jointIndex]->transform.rotation(Quat4f(qw, qx, qy, qz));
 
+	if (rX == 0)
 	m_joints[jointIndex]->transform.setSubmatrix3x3(0, 0, rotation_matrix);
+	//m_joints[jointIndex]->transform.print();
 
 }
 

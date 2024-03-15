@@ -41,22 +41,9 @@ void Mesh::load( const char* filename )
 				bindVertices.push_back(v);
 
 			} else if (s == "f") {
-				string faceLine;
-				vector<unsigned> f;
-				Tuple3u testFaces;
+				Vector3f f;
 
-				while (getline(iss, faceLine, ' ')) {
-					string elems;
-					iss >> elems;
-					istringstream tokenStream(elems);
-					string number;
-					while (getline(tokenStream, number, '/')) {                    
-						unsigned elemUInt = stoul(number);
-						f.push_back(elemUInt);
-						
-					}
-				}
-				// vecf.push_back(f);
+				iss >> f[0] >> f[1] >> f[2];
 				faces.push_back(Tuple3u(f[0], f[1], f[2]));
 			}
 		}
@@ -69,6 +56,7 @@ void Mesh::load( const char* filename )
 
 void Mesh::draw()
 {
+	// glutCreateWindow("testme");
 	// Since these meshes don't have normals
 	// be sure to generate a normal per triangle.
 	// Notice that since we have per-triangle normals
@@ -79,15 +67,15 @@ void Mesh::draw()
     
 
     // Clear the rendering window
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Rotate the image
-    glMatrixMode( GL_MODELVIEW );  // Current matrix affects objects positions
-    glLoadIdentity();              // Initialize to the identity
+    //glMatrixMode( GL_MODELVIEW );  // Current matrix affects objects positions
+    //glLoadIdentity();              // Initialize to the identity
 
-	gluLookAt(0.0, 0.0, 5.0,
-              0.0, 0.0, 0.0,
-              0.0, 1.0, 0.0);
+	// gluLookAt(0.0, 0.0, 5.0,
+    //           0.0, 0.0, 0.0,
+    //           0.0, 1.0, 0.0);
 	
 	// Here are some colors you might use - feel free to add more
     GLfloat diffColors[4][4] = { {0.2, 0.5, 0.9, 1.0},
@@ -123,7 +111,6 @@ void Mesh::draw()
  
     for (int k = 0; k < faces.size(); k++) {
 		Tuple3u face = faces[k];
-        
 
         glNormal3d(0, 1, 0);
         glVertex3d(currentVertices[face[0]].x(), currentVertices[face[0]].y(), currentVertices[face[0]].z());
@@ -131,6 +118,8 @@ void Mesh::draw()
         glVertex3d(currentVertices[face[1]].x(), currentVertices[face[1]].y(), currentVertices[face[1]].z());
         glNormal3d(0, 1, 1);
         glVertex3d(currentVertices[face[2]].x(), currentVertices[face[2]].y(), currentVertices[face[2]].z());
+
+		// cout << "test x: " << currentVertices[face[2]].z() << endl;
 
     }
 
@@ -146,4 +135,25 @@ void Mesh::loadAttachments( const char* filename, int numJoints )
 {
 	// 2.2. Implement this method to load the per-vertex attachment weights
 	// this method should update m_mesh.attachments
+	ifstream file(filename);
+	string line;
+
+	if (file.is_open()) {
+		while (getline(file, line)) {
+			istringstream iss(line);
+
+			string s;
+			vector<float> helpmelol;
+
+			for (int i = 0; i < numJoints; i++) {
+				float temp;
+				iss >> temp;
+				helpmelol.push_back(temp);
+				
+			}
+			attachments.push_back(helpmelol);
+		}
+	}
+	// cout << attachments.size() << endl;
+	// cout << numJoints << endl;
 }
