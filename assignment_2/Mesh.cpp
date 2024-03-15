@@ -47,6 +47,7 @@ void Mesh::load( const char* filename )
 				faces.push_back(Tuple3u(f[0], f[1], f[2]));
 			}
 		}
+		file.close();
 	}
 
 	// make a copy of the bind vertices as the current vertices
@@ -153,6 +154,7 @@ void Mesh::loadAttachments( const char* filename, int numJoints )
 			}
 			attachments.push_back(helpmelol);
 		}
+		file.close();
 	}
 	// cout << attachments.size() << endl;
 	// cout << numJoints << endl;
