@@ -52,7 +52,6 @@ void SkeletalModel::loadSkeleton( const char* filename )
 
 	if (file.is_open()) {
 		while (getline(file, line)) {
-			//cout << line << endl;
 			istringstream iss(line);
 			vector<float> floats;
 			float temp;
@@ -70,7 +69,6 @@ void SkeletalModel::loadSkeleton( const char* filename )
 				
 
 			m_joints.push_back(joint);
-			//m_matrixStack.push(joint->transform);
 
 			if (!rootIdentified && floats[3] == float(-1)) {
 				rootIdentified = true;
@@ -169,13 +167,8 @@ void SkeletalModel::recursiveDrawSkeleton(Joint* parent) {
 void SkeletalModel::drawSkeleton( )
 {
 	// Draw boxes between the joints. You will need to add a recursive helper function to traverse the joint hierarchy.
-	// cout << "called draw skelly" << endl;
 	recursiveDrawSkeleton(m_rootJoint);
 
-	// glLoadMatrixf(Matrix4f().identity().translation(Vector3f(0.0f,-1.0f,-2.0f)));
-	
-	// glutSolidCube(1.0f);
-	// glPopMatrix();
 }
 
 void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float rZ)
@@ -196,16 +189,8 @@ void SkeletalModel::setJointTransform(int jointIndex, float rX, float rY, float 
     float sz = sin(radianZ);
 
 	Matrix3f rotation_matrix = Matrix3f(Vector3f(cy * cz, -cy * sz, sy), Vector3f(cx * sz + cz * sx * sy, cx * cz - sx * sy * sz, -cy * sx), Vector3f(sx * sz - cx * cz * sy, cz * sx + cx * sy * sz, cx * cy));
-	// float qw = sqrt(1 + rotation_matrix.getCol(0).x() + rotation_matrix.getCol(1).y() + rotation_matrix.getCol(2).z() );
-	// float qx = (rotation_matrix.getCol(1).z() - rotation_matrix.getCol(2).y()) / (4 * qw);
-	// float qy = (rotation_matrix.getCol(2).x() - rotation_matrix.getCol(0).z()) / (4 * qw);
-	// float qz = (rotation_matrix.getCol(0).y() - rotation_matrix.getCol(1).x()) / (4 * qw);
-	
-	// m_joints[jointIndex]->transform = m_joints[jointIndex]->transform * m_joints[jointIndex]->transform.rotation(Quat4f(qw, qx, qy, qz));
 
-	if (rX == 0)
 	m_joints[jointIndex]->transform.setSubmatrix3x3(0, 0, rotation_matrix);
-	//m_joints[jointIndex]->transform.print();
 
 }
 
