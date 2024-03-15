@@ -5,10 +5,7 @@ using namespace std;
 void Mesh::load( const char* filename )
 {
 	// 2.1.1. load() should populate bindVertices, currentVertices, and faces
-
 	
-    Vector3f v;
-
 	ifstream file(filename);
 	string line;
 
@@ -65,9 +62,12 @@ void Mesh::draw()
 		Vector3f cvB = Vector3f(currentVertices[face[1] - 1].x(), currentVertices[face[1] - 1].y(), currentVertices[face[1] - 1].z());
 		Vector3f cvC = Vector3f(currentVertices[face[2] - 1].x(), currentVertices[face[2] - 1].y(), currentVertices[face[2] - 1].z());
 
-		Vector3f normA = cvA.cross(cvA, Vector3f(0,0,1));
-		Vector3f normB = cvB.cross(cvB, Vector3f(0,0,1));
-		Vector3f normC = cvC.cross(cvC, Vector3f(0,0,1));
+		Vector3f edgeA = cvB - cvA;
+		Vector3f edgeB = cvC - cvA;
+
+		Vector3f normA = edgeA.cross(edgeA, edgeB).normalized();
+		Vector3f normB = edgeA.cross(edgeA, edgeB).normalized();
+		Vector3f normC = edgeA.cross(edgeA, edgeB).normalized();
 
         glNormal3d(normA.x(), normA.y(), normA.z());
         glVertex3d(cvA.x(), cvA.y(), cvA.z());
@@ -106,10 +106,4 @@ void Mesh::loadAttachments( const char* filename, int numJoints )
 		file.close();
 	}
 	
-	// for (int j = 0; j < attachments[13300].size(); j++) {
-	// 	cout << attachments[13300][j] << " ";
-	// }
-	// cout << endl;
-	// // cout << attachments.back()[7] << endl;
-	// cout << numJoints << endl;
 }
