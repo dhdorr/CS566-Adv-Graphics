@@ -49,23 +49,6 @@ namespace
         timeStepper = new RK4();
         cout << "did default 2\n";
     }
-    
-
-    // switch (testme2)
-    // {
-    // case string("r"):
-    //     timeStepper = new RK4();
-    //     cout << "did rk4\n";
-    //     break;
-    // case 'e':
-    //     timeStepper = new ForwardEuler();
-    //     cout << "did fe\n";
-    //     break;
-    // default:
-    //     timeStepper = new RK4();
-    //     cout << "did default\n";
-    //     break;
-    // }
 		
   }
 
