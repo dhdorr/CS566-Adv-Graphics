@@ -29,7 +29,44 @@ namespace
     // seed the random number generator with the current time
     srand( time( NULL ) );
     system = new SimpleSystem();
-    timeStepper = new RK4();		
+
+    // Reading args
+    char testme;
+    if (argc > 1) {
+        testme = string(argv[1])[0];
+
+        if (testme == 'r') {
+            timeStepper = new RK4();
+            cout << "did rk4\n";
+        } else if (testme == 'e') {
+            timeStepper = new ForwardEuler();
+            cout << "did fe\n";
+        } else {
+            timeStepper = new RK4();
+            cout << "did default 1\n";
+        }
+    } else {
+        timeStepper = new RK4();
+        cout << "did default 2\n";
+    }
+    
+
+    // switch (testme2)
+    // {
+    // case string("r"):
+    //     timeStepper = new RK4();
+    //     cout << "did rk4\n";
+    //     break;
+    // case 'e':
+    //     timeStepper = new ForwardEuler();
+    //     cout << "did fe\n";
+    //     break;
+    // default:
+    //     timeStepper = new RK4();
+    //     cout << "did default\n";
+    //     break;
+    // }
+		
   }
 
   // Take a step forward for the particle shower
