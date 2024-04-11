@@ -21,6 +21,7 @@ namespace
 
     ParticleSystem *system;
     TimeStepper * timeStepper;
+    float step_size = 0.01;
 
   // initialize your particle systems
   ///TODO: read argv here. set timestepper , step size etc
@@ -41,13 +42,20 @@ namespace
         } else if (testme == 'e') {
             timeStepper = new ForwardEuler();
             cout << "did fe\n";
-        } else {
+        } else if (testme == 't') {
+            timeStepper = new Trapzoidal();
+            cout << "did tr\n";
+        }else {
             timeStepper = new RK4();
             cout << "did default 1\n";
         }
     } else {
         timeStepper = new RK4();
-        cout << "did default 2\n";
+        //cout << "did default 2\n";
+    }
+
+    if (argc > 2) {
+        step_size = atof(argv[2]);
     }
 		
   }
@@ -58,7 +66,8 @@ namespace
   void stepSystem()
   {
       ///TODO The stepsize should change according to commandline arguments
-    const float h = 0.04f;
+    // const float h = 0.04f;
+    const float h = step_size;
     if(timeStepper!=0){
       timeStepper->takeStep(system,h);
     }
