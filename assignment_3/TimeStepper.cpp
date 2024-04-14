@@ -79,7 +79,6 @@ void RK4::takeStep(ParticleSystem* particleSystem, float stepSize)
 		}
 
 	}
-
 	particleSystem->setState(X1);
 }
 

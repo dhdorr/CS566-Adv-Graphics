@@ -10,6 +10,7 @@
 class PendulumSystem: public ParticleSystem
 {
 public:
+	Vector3f test_velocity;	
 	PendulumSystem(int numParticles);
 	
 	vector<Vector3f> evalF(vector<Vector3f> state);

@@ -12,6 +12,7 @@
 
 #include "TimeStepper.hpp"
 #include "simpleSystem.h"
+#include "pendulumSystem.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ namespace
 
     ParticleSystem *system;
     TimeStepper * timeStepper;
-    float step_size = 0.01;
+    float step_size = 0.04;
 
   // initialize your particle systems
   ///TODO: read argv here. set timestepper , step size etc
@@ -29,8 +30,8 @@ namespace
   {
     // seed the random number generator with the current time
     srand( time( NULL ) );
-    system = new SimpleSystem();
-
+    // system = new SimpleSystem();
+    system = new PendulumSystem(1);
     // Reading args
     char testme;
     if (argc > 1) {

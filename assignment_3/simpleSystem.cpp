@@ -6,9 +6,7 @@ using namespace std;
 
 SimpleSystem::SimpleSystem()
 {
-	// m_vVecState.push_back(Vector3f(0.4, 0.4, 0));
 	m_vVecState.push_back(Vector3f(0.6f, 0, 0));
-	// m_vVecState.push_back(Vector3f(0.0, 0, 0));
 	m_numParticles = 1;
 
 }
