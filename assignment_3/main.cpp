@@ -30,8 +30,8 @@ namespace
   {
     // seed the random number generator with the current time
     srand( time( NULL ) );
-    // system = new SimpleSystem();
-    system = new PendulumSystem(1);
+    system = new SimpleSystem();
+    // system = new PendulumSystem(1);
     // Reading args
     char testme;
     if (argc > 1) {
@@ -132,6 +132,12 @@ namespace
             Matrix4f eye = Matrix4f::identity();
             camera.SetRotation( eye );
             camera.SetCenter( Vector3f::ZERO );
+            break;
+        }
+        case 't':
+        {
+            system = new PendulumSystem(2); 
+            stepSystem();
             break;
         }
         default:

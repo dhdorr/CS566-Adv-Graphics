@@ -51,6 +51,8 @@ void Trapzoidal::takeStep(ParticleSystem* particleSystem, float stepSize)
 // RK4 is given to you
 void RK4::takeStep(ParticleSystem* particleSystem, float stepSize)
 {	
+	// cout << "\nsize? " << stepSize << endl;
+
 	vector<Vector3f> X1 = particleSystem->getState();	
 	vector<Vector3f> f1 = particleSystem->evalF(X1);
 
