@@ -11,10 +11,6 @@ ClothSystem::ClothSystem()
 	for ( int i = 0; i < m_numParticles; i++) {
 		temp_vecs.push_back(Vector3f(-1.0f + (0.5f * i), 1.0f, 0));
 		temp_vecs.push_back(Vector3f(0, 0, 0));
-		// temp_vecs.push_back(Vector3f(-1.0f + (0.5f * i), 1.0f, 0));
-	}
-	for ( int i = 0; i < m_numParticles; i++) {
-		// temp_vecs.push_back(Vector3f(0, 0, 0));
 	}
 
 

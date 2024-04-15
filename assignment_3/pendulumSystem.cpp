@@ -20,13 +20,12 @@ PendulumSystem::PendulumSystem(int numParticles):ParticleSystem(numParticles)
 	for (int i = 0; i < m_numParticles; i++) {
 		
 		// for this system, we care about the position and the velocity
-		
 		temp_vecs.push_back(Vector3f(cos(M_PI) - (1.0f * i), -sin(M_PI), 0));
-		temp_vecs.push_back(Vector3f(cos(M_PI) - (1.0f * i), -sin(M_PI), 0));
+		temp_vecs.push_back(Vector3f(0, 0, 0));
 
 	}
-	this->setState(temp_vecs);
 
+	this->setState(temp_vecs);
 }
 
 
@@ -36,51 +35,42 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 {
 	vector<Vector3f> f;
 
-	// YOUR CODE HERE
-	// cout << state.size() << endl;
-	for (int p = 0; p < state.size(); p += 2) {
-		Vector3f force = Vector3f(0);
-		float k = 0.1f;
-		int temp = 0;
-		float mass = 1.0f;
-		float rest_len = 1.5f;
-		float initial_x = 0;
-		float initial_y = 0;
-		float dx = initial_x - state[p][0];
-		float dy = initial_y - state[p][1];
-		if (p > 0) {
-			temp = p - 2;
-			initial_x = state[temp][0];
-			initial_y = state[temp][1];
-			dx = initial_x - state[p][0];
-			dy = -1 * (initial_y - state[p][1]);
-		}	
+	float mass = 0.01f;
+	float gravity_acceleration = -1.0f * 9.8f;
+	float drag_constant = 0.1f;
+	float spring_constant = 100.0f;
+	float spring_dampening = 0.01f;
+	float rest_length = 0.5f;
 
-		float len = sqrt(dx*dx + dy*dy);
+	for (int s = 0; s < state.size(); s += 2) {
+		Vector3f prev_state = Vector3f(0);
+		if (s > 0) {
+			prev_state = state[s - 2];
+		}
 
-		// gravity
-		force[1] += mass *  -1.0f * 9.8f;
+		// cout << "STATE: " << s << endl;
+		// state[s].print();
+		// state[s + 1].print();
 
-		// viscous drag
-		force[1] -= -1.0f * k * state[p + 1][1];
-		force[0] += -1.0f * k * state[p + 1][0];
+		float force_y = 0;
+		float force_x = 0;
 
-		// springs
-		force[1] *= -1.0f * k * -1 * (initial_y - dy - rest_len);
-		force[0] -= (-1.0f * dx); //-1.0f * k *
-		// force = -1.0f * k * (state[p].abs() - rest_len) * state[p] / state[p].abs();
-		
+		// GRAVITY
+		force_y += mass * gravity_acceleration;
 
-		// cout << "gravity + drag * spring: "; force.print();
+		// VISCOUS DRAG
+		force_y += -1.0f * drag_constant * state[s + 1][1];
+		force_x += -1.0f * drag_constant * state[s + 1][0];
 
-		f.push_back(state[p + 1] + force);	
-		f.push_back(force);	
+		// SPRING FORCE >:(
+		force_y += 1.0f * spring_constant * ((prev_state[1] - state[s][1]) - rest_length) * spring_dampening;
+		force_x += 1.0f * spring_constant * ((prev_state[0] - state[s][0])) * spring_dampening; 
+	
 
+		// push back velocity then sum of forces
+		f.push_back(state[s+1] + Vector3f(force_x, force_y, 0));
+		f.push_back(Vector3f(force_x, force_y, 0));
 	}
-
-	// for(int j = 0; j < f.size(); j++) {
-	// 	f[j].print();
-	// }
 
 	
 	return f;
@@ -89,69 +79,45 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 // render the system (ie draw the particles)
 void PendulumSystem::draw()
 {
-	vector<Vector3f> temp_vec = this->getState();
-	for (int i = 0; i < m_numParticles; i++) {
+	vector<Vector3f> pendulum_particles = this->getState();
+	// cout << "draw vecs: " << cloth_particles.size() << endl;
 
-		Vector3f pos = temp_vec[i];
+	for (int p = 0; p < pendulum_particles.size(); p += 2) {
+		cout << "\nDraw STATE: " << p << endl;
+		pendulum_particles[p].print();
+		// pendulum_particles[p + 1].print();
 
-		// line
-		float radians = atan2(pos[0], pos[1]);
-		float degrees = radians * 180.0f / M_PI;
-		float size = 0.1f;
-		float initial_x = 0;
-		float initial_y = 0;
-		float dx = initial_x - pos[0];
-		float dy = initial_y - pos[1];
-		int temp = 0;
-		// if (i > 0) {
-		// 	temp = i - 1;
-		// 	initial_x = -1 * temp_vec[temp][0];
-		// 	initial_y = -1 * temp_vec[temp][1];
-		// 	dx = initial_x - pos[0];
-		// 	dy = initial_y - pos[1];
-		// }
-
-		// float len = sqrt(dx*dx + dy*dy);
-		// radians = atan2(dx, dy);
-		// degrees = radians * 180.0f / M_PI;
-
-		float test_x = 0;
-		float test_y = 0;
-		for (int j = 0; j < i; j++) {
-			test_x += temp_vec[j][0];
-			test_y += temp_vec[j][1];
-		}
-
-		if (i > 0) {
-			temp = i - 1;
-			initial_x = -1 * test_x;
-			initial_y = -1 * test_y;
-			dx = initial_x - pos[0];
-			dy = initial_y - pos[1];
-		}
-
-		float len = sqrt(dx*dx + dy*dy);
-		radians = atan2(dx, dy);
-		degrees = radians * 180.0f / M_PI;
-		
+		//  position of particle i.
 		glPushMatrix();
-		// glTranslatef(initial_x - (-1 * dx / 2.0f), initial_y - (-1 * dy / 2.0f), pos[2] );
-		glTranslatef(-1 * test_x - (-1 * dx / 2.0f), -1 * test_y - (-1 * dy / 2.0f), pos[2] );
-		glRotatef(-1 * degrees, 0, 0, 1);
+		glTranslatef(pendulum_particles[p][0], pendulum_particles[p][1], pendulum_particles[p][2]);
+		glutSolidSphere(0.075f,10.0f,10.0f);
+		glPopMatrix();
+
+		// draw line
+		Vector3f prev_particle = Vector3f(0);
+		if (p > 0) {
+			prev_particle = pendulum_particles[p - 2];
+		}
+		Vector3f spring_position = Vector3f((prev_particle[0] + pendulum_particles[p][0]) / 2, (prev_particle[1] + pendulum_particles[p][1]) / 2, 0);
+		cout << "\nSpring position: " << p << endl;
+		spring_position.print();
+
+		float dx = prev_particle[0] - pendulum_particles[p][0];
+		float dy = prev_particle[1] - pendulum_particles[p][1];
+
+		float len = sqrt(pow(dx, 2) + pow(dy, 2));
+		cout << len << endl;
+		float size = 0.1f;
+		float radians = atan2(prev_particle[0] - pendulum_particles[p][0], prev_particle[1] - pendulum_particles[p][1]);
+		float degrees = -1 * radians * 180.0f / M_PI;
+
+		glPushMatrix();
+		glTranslatef(spring_position[0], spring_position[1], spring_position[2]);
+		glRotatef(degrees, 0, 0, 1);
 		glScalef(1, len / size, 1);
 		glutSolidCube(size);
 		glPopMatrix();
-		
 
-		//  position of particle i. YOUR CODE HERE
-		glPushMatrix();
-		
-		// glTranslatef(initial_x - (-1 * dx), initial_y - (-1 * dy), pos[2] );
-		glTranslatef(-1 * test_x - (-1 * dx), -1 * test_y - (-1 * dy), pos[2] );
-		// glTranslatef(-1 * (test_x), -1 * (test_y), pos[2] );
-
-		glutSolidSphere(0.075f,10.0f,10.0f);
-		glPopMatrix();
 	}
 
 }
