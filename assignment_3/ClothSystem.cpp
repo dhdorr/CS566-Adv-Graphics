@@ -80,6 +80,28 @@ void ClothSystem::draw()
 		glTranslatef(cloth_particles[p][0], cloth_particles[p][1], cloth_particles[p][2]);
 		glutSolidSphere(0.075f,10.0f,10.0f);
 		glPopMatrix();
+
+		// draw line
+		Vector3f prev_particle = Vector3f(0);
+		if (p > 0) {
+			prev_particle = cloth_particles[p - 2];
+		}
+		Vector3f spring_position = Vector3f((prev_particle[0] + cloth_particles[p][0]) / 2, (prev_particle[1] + cloth_particles[p][1]) / 2, 0);
+
+		float dx = prev_particle[0] - cloth_particles[p][0];
+		float dy = prev_particle[1] - cloth_particles[p][1];
+
+		float len = sqrt(pow(dx, 2) + pow(dy, 2));
+		float size = 0.1f;
+		float radians = atan2(dx, dy);
+		float degrees = -1 * radians * 180.0f / M_PI;
+
+		glPushMatrix();
+		glTranslatef(spring_position[0], spring_position[1], spring_position[2]);
+		glRotatef(degrees, 0, 0, 1);
+		glScalef(1, len / size, 1);
+		glutSolidCube(size);
+		glPopMatrix();
 	}
 
 

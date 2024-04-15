@@ -83,10 +83,6 @@ void PendulumSystem::draw()
 	// cout << "draw vecs: " << cloth_particles.size() << endl;
 
 	for (int p = 0; p < pendulum_particles.size(); p += 2) {
-		cout << "\nDraw STATE: " << p << endl;
-		pendulum_particles[p].print();
-		// pendulum_particles[p + 1].print();
-
 		//  position of particle i.
 		glPushMatrix();
 		glTranslatef(pendulum_particles[p][0], pendulum_particles[p][1], pendulum_particles[p][2]);
@@ -99,16 +95,13 @@ void PendulumSystem::draw()
 			prev_particle = pendulum_particles[p - 2];
 		}
 		Vector3f spring_position = Vector3f((prev_particle[0] + pendulum_particles[p][0]) / 2, (prev_particle[1] + pendulum_particles[p][1]) / 2, 0);
-		cout << "\nSpring position: " << p << endl;
-		spring_position.print();
 
 		float dx = prev_particle[0] - pendulum_particles[p][0];
 		float dy = prev_particle[1] - pendulum_particles[p][1];
 
 		float len = sqrt(pow(dx, 2) + pow(dy, 2));
-		cout << len << endl;
 		float size = 0.1f;
-		float radians = atan2(prev_particle[0] - pendulum_particles[p][0], prev_particle[1] - pendulum_particles[p][1]);
+		float radians = atan2(dx, dy);
 		float degrees = -1 * radians * 180.0f / M_PI;
 
 		glPushMatrix();
