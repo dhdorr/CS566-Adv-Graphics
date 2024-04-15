@@ -136,7 +136,7 @@ namespace
         }
         case 't':
         {
-            system = new PendulumSystem(2); 
+            system = new PendulumSystem(1); 
             stepSystem();
             break;
         }

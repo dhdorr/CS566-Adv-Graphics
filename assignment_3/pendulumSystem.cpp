@@ -1,6 +1,6 @@
 
 #include "pendulumSystem.h"
-#include "springs.h"
+//#include "springs.h"
 #include <iostream>
 
 #define NUM_OBJECTS 	2
@@ -8,8 +8,8 @@
 #define SPRING_K 		1000
 #define SPRING_D		100
 
-Particle Objects[2];
-Spring Springs[NUM_SPRINGS];
+//Particle Objects[2];
+//Spring Springs[NUM_SPRINGS];
 
 
 PendulumSystem::PendulumSystem(int numParticles):ParticleSystem(numParticles)
@@ -25,15 +25,15 @@ PendulumSystem::PendulumSystem(int numParticles):ParticleSystem(numParticles)
 	}
 }
 
-Particle::Particle(void) {
-	fMass = 1.0f;
-	vPosition = Vector3f(0);
-	vVelocity = Vector3f(0);
-	fSpeed = 0.0f;
-	vForces = Vector3f(0);
-	fRadius = 0.1f;
-	vGravity = Vector3f(0, fMass * -9.8f, 0);
-}
+// Particle::Particle(void) {
+// 	fMass = 1.0f;
+// 	vPosition = Vector3f(0);
+// 	vVelocity = Vector3f(0);
+// 	fSpeed = 0.0f;
+// 	vForces = Vector3f(0);
+// 	fRadius = 0.1f;
+// 	vGravity = Vector3f(0, fMass * -9.8f, 0);
+// }
 
 
 // TODO: implement evalF
@@ -177,9 +177,9 @@ void PendulumSystem::draw()
 {
 	// cout << m_vVecState.size() << endl;
 	for (int i = 0; i < m_numParticles; i++) {
-		cout << "particle draw: " << m_numParticles << endl;
-		cout << "vec state size: " << m_vVecState.size() << endl;
-		m_vVecState[i].print();
+		// cout << "particle draw: " << m_numParticles << endl;
+		// cout << "vec state size: " << m_vVecState.size() << endl;
+		// m_vVecState[i].print();
 		
 		Vector3f pos =  Vector3f(m_vVecState[i][0], m_vVecState[i][1], 0) ;//  position of particle i. YOUR CODE HERE
 		glPushMatrix();
