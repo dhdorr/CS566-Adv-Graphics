@@ -27,6 +27,14 @@ namespace
     int system_swap_count = 0;
     int active_simulation = 0;
 
+    void printHelpMenu() {
+        cout << "\nHELP MENU:\n";
+        cout << " - r   - to reset the current simulation\n";
+        cout << " - t   - to transition to the next simulation\n";
+        cout << " - esc - to close the program\n";
+        cout << " - h   - to open the help menu\n";
+    }
+
   // initialize your particle systems
   ///TODO: read argv here. set timestepper , step size etc
   void initSystem(int argc, char * argv[])
@@ -146,7 +154,7 @@ namespace
                 system_swap_count += 1;
                 active_simulation = 1;
             } else if (system_swap_count == 1) {
-                system = new PendulumSystem(2); 
+                system = new PendulumSystem(3); 
                 //glutSwapBuffers();
                 stepSystem();
                 system_swap_count += 1;
@@ -178,7 +186,7 @@ namespace
                 //glutSwapBuffers();
                 stepSystem();
             } else if (active_simulation == 2) {
-                system = new PendulumSystem(2); 
+                system = new PendulumSystem(3); 
                 //glutSwapBuffers();
                 stepSystem();
             } else if (active_simulation == 3) {
@@ -187,6 +195,11 @@ namespace
                 stepSystem();
             }
             
+            break;
+        }
+        case 'h':
+        {
+            printHelpMenu();   
             break;
         }
         default:

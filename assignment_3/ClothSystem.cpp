@@ -32,10 +32,10 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 
 	float mass = 0.01f;
 	float gravity_acceleration = -1.0f * 9.8f;
-	float drag_constant = 5.1f;
-	float spring_constant = 1.0f;
-	float spring_dampening = 1.0f;
-	float rest_length = 0.5f;
+	float drag_constant = 1.0f;
+	float spring_constant = 0.55f;
+	float spring_dampening = 0.01f;
+	float rest_length = 0.8f;
 
 	for (int s = 0; s < state.size(); s += 2) {
 		float force_y = 0;
@@ -61,18 +61,25 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 
 
 		// cout << "\nParticle - " << s / 2 << " :: ";
+		Vector3f SpringForce = Vector3f(0);
 		for (int c = 0; c < connected_states.size(); c++) {
-			force_y += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
-			force_x += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
-			// cout << c << ", ";
+			
+			SpringForce[1] += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length);
+			SpringForce[0] += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
+			// force_y += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
+			// force_x += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
+			// cout << "Spring Force: "; SpringForce.print();
 		}
+		force_y += SpringForce[1];
+		force_x += SpringForce[0];
 
 		// Calculate force to anchors
-		if (s == 0 || s == 4 ) {
+		if (s == 12 || s == 16 ) {
 			//connected_states.push_back(Vector3f(0));
 			force_x = 0;
 			force_y = 0;
-		}
+		} 
+
 		// force_x = 0;
 		// force_y = 0;
 	
@@ -113,7 +120,7 @@ void ClothSystem::draw()
 			float dy = prev_particle[1] - cloth_particles[p][1];
 
 			float len = sqrt(pow(dx, 2) + pow(dy, 2));
-			float size = 0.1f;
+			float size = 0.03f;
 			float radians = atan2(dx, dy);
 			float degrees = -1 * radians * 180.0f / M_PI;
 
