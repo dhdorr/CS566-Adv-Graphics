@@ -10,6 +10,8 @@ INSTRUCTIONS:
 
  . press 't' to swap between particle simulations
 
+ . press 'r' to reset current particle simulation
+
  . to compile, simply navigate to the project direcory and execute 'make'
 
 
