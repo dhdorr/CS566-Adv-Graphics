@@ -4,15 +4,21 @@
 //TODO: Initialize here
 ClothSystem::ClothSystem()
 {
-	m_numParticles = 6;
+	int i = 0;
+	int j = 0;
 	vector<Vector3f> temp_vecs;
 
 	// fill in code for initializing the state based on the number of particles
-	for ( int i = 0; i < m_numParticles; i++) {
-		temp_vecs.push_back(Vector3f(-1.0f + (0.5f * i), 1.0f, 0));
-		temp_vecs.push_back(Vector3f(0, 0, 0));
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 3; j++) {
+			temp_vecs.push_back(Vector3f(-1.0f + (0.5f * j), 1.0f + (0.5f * i), 0));
+			temp_vecs.push_back(Vector3f(0, 0, 0));
+		}
+		// temp_vecs.push_back(Vector3f(-1.0f + (0.5f * i), 1.0f - (0.5f), 0));
+		// temp_vecs.push_back(Vector3f(0, 0, 0));
 	}
 
+	m_numParticles = i * j;
 
 	this->setState(temp_vecs);
 }
@@ -24,12 +30,12 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 {
 	vector<Vector3f> f;
 
-	float mass = 0.01f;
+	float mass = 0.1f;
 	float gravity_acceleration = -1.0f * 9.8f;
-	float drag_constant = 1.5f;
-	float spring_constant = 100.0f;
-	float spring_dampening = 0.1f;
-	float rest_length = 0.25f;
+	float drag_constant = 5.5f;
+	float spring_constant = 1000.0f;
+	float spring_dampening = 0.01f;
+	float rest_length = 0.3f;
 
 	for (int s = 0; s < state.size(); s += 2) {
 		Vector3f prev_state = Vector3f(0);
@@ -48,6 +54,13 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		force_x += -1.0f * drag_constant * state[s + 1][0];
 
 		// SPRING FORCE >:(
+		/*****************
+		|   | 0 | 1 | 2 |
+		| 0 |   |   |   |
+		| 1 |   |   |   |
+		| 2 |   |   |   |
+		******************/
+	
 		force_y += 1.0f * spring_constant * ((prev_state[1] - state[s][1]) - rest_length) * spring_dampening;
 		force_x += 1.0f * spring_constant * ((prev_state[0] - state[s][0])) * spring_dampening; 
 
@@ -55,10 +68,7 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		if (s >= state.size() - 2) {
 			force_y += -1.0f * spring_constant * ((state[s][1] - 0) - rest_length) * spring_dampening;
 			force_x += -1.0f * spring_constant * ((state[s][0] - 2.0f)) * spring_dampening; 
-		} else {
-			force_y += 1.0f * spring_constant * ((state[s][1] - state[s][1]) - rest_length) * spring_dampening;
-			force_x += 1.0f * spring_constant * ((state[s][0] - state[s][0])) * spring_dampening; 
-		}
+		} 
 	
 
 		// push back velocity then sum of forces
