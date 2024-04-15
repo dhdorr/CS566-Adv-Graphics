@@ -13,6 +13,7 @@
 #include "TimeStepper.hpp"
 #include "simpleSystem.h"
 #include "pendulumSystem.h"
+#include "ClothSystem.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ namespace
     TimeStepper * timeStepper;
     float step_size = 0.04;
     int system_swap_count = 0;
+    int active_simulation = 0;
 
   // initialize your particle systems
   ///TODO: read argv here. set timestepper , step size etc
@@ -142,22 +144,45 @@ namespace
                 //glutSwapBuffers();
                 stepSystem();
                 system_swap_count += 1;
+                active_simulation = 1;
             } else if (system_swap_count == 1) {
                 system = new PendulumSystem(2); 
                 //glutSwapBuffers();
                 stepSystem();
                 system_swap_count += 1;
+                active_simulation = 2;
+            } else if (system_swap_count == 2) {
+                system = new ClothSystem(); 
+                //glutSwapBuffers();
+                stepSystem();
+                system_swap_count += 1;
+                active_simulation = 3;
+            } else if (system_swap_count == 3) {
+                system = new SimpleSystem(); 
+                //glutSwapBuffers();
+                stepSystem();
+                system_swap_count = 0;
+                active_simulation = 0;
             }
+            
             
             break;
         }
         case 'r':
         {
-            if (system_swap_count == 0) {
+            if (active_simulation == 0) {
                 system = new SimpleSystem();
                 stepSystem();
-            } else {
-                system = new PendulumSystem(system_swap_count); 
+            } else if (active_simulation == 1) {
+                system = new PendulumSystem(1); 
+                //glutSwapBuffers();
+                stepSystem();
+            } else if (active_simulation == 2) {
+                system = new PendulumSystem(2); 
+                //glutSwapBuffers();
+                stepSystem();
+            } else if (active_simulation == 3) {
+                system = new ClothSystem(); 
                 //glutSwapBuffers();
                 stepSystem();
             }
