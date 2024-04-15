@@ -139,10 +139,12 @@ namespace
         {
             if (system_swap_count == 0) {
                 system = new PendulumSystem(1); 
+                //glutSwapBuffers();
                 stepSystem();
                 system_swap_count += 1;
             } else if (system_swap_count == 1) {
                 system = new PendulumSystem(2); 
+                //glutSwapBuffers();
                 stepSystem();
                 system_swap_count += 1;
             }
