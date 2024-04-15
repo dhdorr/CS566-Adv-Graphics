@@ -151,6 +151,15 @@ namespace
             
             break;
         }
+        case 'r':
+        {
+            system = new PendulumSystem(system_swap_count); 
+            //glutSwapBuffers();
+            stepSystem();
+            
+            
+            break;
+        }
         default:
             cout << "Unhandled key press " << key << "." << endl;        
         }
@@ -333,7 +342,7 @@ int main( int argc, char* argv[] )
     camera.SetDistance( 10 );
     camera.SetCenter( Vector3f::ZERO );
     
-    glutCreateWindow("Assignment 4");
+    glutCreateWindow("Derek Dorr - Assignment 4");
 
     // Initialize OpenGL parameters.
     initRendering();

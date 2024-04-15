@@ -51,6 +51,8 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 		Vector3f force = Vector3f(0);
 		float k = 0.1f;
 		int temp = 0;
+		float mass = 1.0f;
+		float rest_len = 1.5f;
 		float dx = 0 - state[p][0];
 		float dy = 0 - state[p][1];
 		if (p > 0) {
@@ -60,12 +62,12 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 		}
 		
 
-		if (abs(dx) > 3.0f) {
-			dx = 3.0f;
+		if (abs(dx) > 6.0f) {
+			dx = 6.0f;
 		}
 		
-		if (abs(dy) > 3.0f) {
-			dy = 3.0f;
+		if (abs(dy) > 6.0f) {
+			dy = 6.0f;
 		}
 
 		float len = sqrt(dx*dx + dy*dy);
@@ -73,14 +75,14 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 
 
 		// gravity
-		force[1] += 1.0f *  -1.0f * 9.8f;
+		force[1] += mass *  -1.0f * 9.8f;
 
 		// viscous drag
-		force[1] += -1.0f * k * state[p + 1][1];
+		force[1] -= -1.0f * k * state[p + 1][1];
 		force[0] += -1.0f * k * state[p + 1][0];
 
 		// springs
-		force[1] *= -1.0f * k * ((-1.0f * state[p][1]) - 1.5f);
+		force[1] *= -1.0f * k * ((-1.0f * state[p][1]) - rest_len);
 		force[0] -= (-1.0f * dx); //-1.0f * k *
 		
 
