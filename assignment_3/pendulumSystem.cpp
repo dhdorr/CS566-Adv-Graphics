@@ -15,6 +15,7 @@
 PendulumSystem::PendulumSystem(int numParticles):ParticleSystem(numParticles)
 {
 	m_numParticles = numParticles;
+	m_numParticles = 4;
 	vector<Vector3f> temp_vecs;
 	// fill in code for initializing the state based on the number of particles
 	for (int i = 0; i < m_numParticles; i++) {
@@ -44,13 +45,22 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 
 	for (int s = 0; s < state.size(); s += 2) {
 		Vector3f prev_state = Vector3f(0);
+		vector<Vector3f> connected_velocities;
+		
 		if (s > 0) {
 			prev_state = state[s - 2];
 		}
 
-		// cout << "STATE: " << s << endl;
-		// state[s].print();
-		// state[s + 1].print();
+		for (int v = 0; v < state.size(); v++) {
+			if (v == s - 1 || v == s + 3) {
+				connected_velocities.push_back(state[v]);
+			}
+		}
+
+		if (s == 0) {
+			connected_velocities.push_back(Vector3f(0));
+		}
+
 
 		float force_y = 0;
 		float force_x = 0;
@@ -59,8 +69,10 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 		force_y += mass * gravity_acceleration;
 
 		// VISCOUS DRAG
-		force_y += -1.0f * drag_constant * state[s + 1][1];
-		force_x += -1.0f * drag_constant * state[s + 1][0];
+		for (int v = 0; v < connected_velocities.size(); v++) {
+			force_y += -1.0f * drag_constant * (state[s + 1][1] - connected_velocities[v][1]);
+			force_x += -1.0f * drag_constant * (state[s + 1][0] - connected_velocities[v][0]);
+		}
 
 		// SPRING FORCE >:(
 		force_y += 1.0f * spring_constant * ((prev_state[1] - state[s][1]) - rest_length) * spring_dampening;
