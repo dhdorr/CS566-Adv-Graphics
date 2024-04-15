@@ -23,6 +23,7 @@ namespace
     ParticleSystem *system;
     TimeStepper * timeStepper;
     float step_size = 0.04;
+    int system_swap_count = 0;
 
   // initialize your particle systems
   ///TODO: read argv here. set timestepper , step size etc
@@ -136,8 +137,16 @@ namespace
         }
         case 't':
         {
-            system = new PendulumSystem(1); 
-            stepSystem();
+            if (system_swap_count == 0) {
+                system = new PendulumSystem(1); 
+                stepSystem();
+                system_swap_count += 1;
+            } else if (system_swap_count == 1) {
+                system = new PendulumSystem(2); 
+                stepSystem();
+                system_swap_count += 1;
+            }
+            
             break;
         }
         default:

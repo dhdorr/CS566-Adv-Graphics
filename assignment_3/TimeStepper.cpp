@@ -57,6 +57,7 @@ void RK4::takeStep(ParticleSystem* particleSystem, float stepSize)
 	vector<Vector3f> f1 = particleSystem->evalF(X1);
 
 	if (f1.size() >= 1) {	
+		
 		vector<Vector3f> X2;
 		for (unsigned int i = 0; i < 2 * particleSystem->m_numParticles; i++)
 		{

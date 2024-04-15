@@ -15,14 +15,16 @@
 PendulumSystem::PendulumSystem(int numParticles):ParticleSystem(numParticles)
 {
 	m_numParticles = numParticles;
-
+	vector<Vector3f> temp_vecs;
 	// fill in code for initializing the state based on the number of particles
 	for (int i = 0; i < m_numParticles; i++) {
 		
 		// for this system, we care about the position and the velocity
 		// m_vVecState.push_back(Vector3f(cos(M_PI/4), -sin(M_PI/4), 0));
-		m_vVecState.push_back(Vector3f(cos(M_PI) - 1.0f * i, -sin(M_PI), 0));
+		
+		temp_vecs.push_back(Vector3f(cos(M_PI) - 1.0f * i, -sin(M_PI), 0));
 	}
+	this->setState(temp_vecs);
 }
 
 // Particle::Particle(void) {
@@ -180,7 +182,7 @@ void PendulumSystem::draw()
 		// cout << "vec state size: " << m_vVecState.size() << endl;
 		// m_vVecState[i].print();
 		
-		Vector3f pos =  Vector3f(m_vVecState[i]) ;//  position of particle i. YOUR CODE HERE
+		Vector3f pos =  Vector3f(this->getState()[i]) ;//  position of particle i. YOUR CODE HERE
 		glPushMatrix();
 		glTranslatef(pos[0], pos[1], pos[2] );
 		glutSolidSphere(0.075f,10.0f,10.0f);
