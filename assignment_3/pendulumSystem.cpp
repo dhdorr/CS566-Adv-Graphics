@@ -43,7 +43,7 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 	vector<Vector3f> f;
 
 	// YOUR CODE HERE
-	cout << state.size() << endl;
+	// cout << state.size() << endl;
 	for (int p = 0; p < state.size(); p += 2) {
 		Vector3f force = Vector3f(0);
 		float k = 0.1f;
@@ -167,7 +167,6 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 
 	// cout << endl;
 
-
 	
 	return f;
 }
@@ -181,10 +180,11 @@ void PendulumSystem::draw()
 		// cout << "vec state size: " << m_vVecState.size() << endl;
 		// m_vVecState[i].print();
 		
-		Vector3f pos =  Vector3f(m_vVecState[i][0], m_vVecState[i][1], 0) ;//  position of particle i. YOUR CODE HERE
+		Vector3f pos =  Vector3f(m_vVecState[i]) ;//  position of particle i. YOUR CODE HERE
 		glPushMatrix();
 		glTranslatef(pos[0], pos[1], pos[2] );
 		glutSolidSphere(0.075f,10.0f,10.0f);
 		glPopMatrix();
 	}
+
 }
