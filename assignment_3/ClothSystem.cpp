@@ -31,9 +31,9 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 	float mass = 0.01f;
 	float gravity_acceleration = -1.0f * 9.8f;
 	float drag_constant = 0.1f;
-	float spring_constant = 10.1f;
+	float spring_constant = 100.0f;
 	float spring_dampening = 0.01f;
-	float rest_length = 1.5f;
+	float rest_length = 0.5f;
 
 	for (int s = 0; s < state.size(); s += 2) {
 		Vector3f prev_state = Vector3f(0);
@@ -56,8 +56,8 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		force_x += -1.0f * drag_constant * state[s + 1][0];
 
 		// SPRING FORCE >:(
-		force_y += 1.0f * spring_constant * ((0 - state[s][1]) - rest_length) * spring_dampening;
-		force_x += 1.0f * spring_constant * ((0 - state[s][0])) * spring_dampening; 
+		force_y += 1.0f * spring_constant * ((prev_state[1] - state[s][1]) - rest_length) * spring_dampening;
+		force_x += 1.0f * spring_constant * ((prev_state[0] - state[s][0])) * spring_dampening; 
 	
 
 		// push back velocity then sum of forces
