@@ -38,11 +38,6 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 	float rest_length = 0.3f;
 
 	for (int s = 0; s < state.size(); s += 2) {
-		Vector3f prev_state = Vector3f(0);
-		if (s > 0) {
-			prev_state = state[s - 2];
-		}
-
 		float force_y = 0;
 		float force_x = 0;
 
@@ -60,7 +55,27 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		| 1 |   |   |   |
 		| 2 |   |   |   |
 		******************/
-	
+
+		Vector3f prev_state = Vector3f(0);
+		vector<Vector3f> connected_states;
+		if (s > 0) {
+			for (int t = 0; t < state.size(); t += 2){
+				int current_index = s/2;
+				int other_index = t/2;
+				if (abs(current_index - other_index) > 4) {
+					continue;
+				}
+				if (current_index == other_index) {
+					continue;
+				}
+				if (abs((current_index % 3) - (other_index % 3)) <= 1) {
+					cout << "\nHELLO!? " << "true!" << " | index: " << current_index << " | other index: " << other_index << endl; 
+				}
+			}
+
+			prev_state = state[s - 2];
+		}
+
 		force_y += 1.0f * spring_constant * ((prev_state[1] - state[s][1]) - rest_length) * spring_dampening;
 		force_x += 1.0f * spring_constant * ((prev_state[0] - state[s][0])) * spring_dampening; 
 
