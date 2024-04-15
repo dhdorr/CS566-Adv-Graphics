@@ -62,13 +62,13 @@ vector<Vector3f> PendulumSystem::evalF(vector<Vector3f> state)
 		}
 		
 
-		if (abs(dx) > 6.0f) {
-			dx = 6.0f;
-		}
+		// if (abs(dx) > 6.0f) {
+		// 	dx = 6.0f;
+		// }
 		
-		if (abs(dy) > 6.0f) {
-			dy = 6.0f;
-		}
+		// if (abs(dy) > 6.0f) {
+		// 	dy = 6.0f;
+		// }
 
 		float len = sqrt(dx*dx + dy*dy);
 		// cout << "dx: " << dx << "| dy: " << dy << "| len: " << len << endl;
@@ -185,8 +185,31 @@ void PendulumSystem::draw()
 		// cout << "particle draw: " << m_numParticles << endl;
 		// cout << "vec state size: " << m_vVecState.size() << endl;
 		// m_vVecState[i].print();
+
+		Vector3f pos = temp_vec[i];
+
+		// line
+		float radians = atan2(pos[0], pos[1]);
+		float degrees = radians * 180.0f / M_PI;
+		float size = 0.1f;
+		float dx = 0 - pos[0];
+		float dy = 0 - pos[1];
+		if (i > 0) {
+			int temp = i - 1;
+			dx = temp_vec[temp][0] - pos[0];
+			dy = temp_vec[temp][1] - pos[1];
+		}
+		float len = sqrt(dx*dx + dy*dy);
+		cout << "len: " << len << endl;
+		cout << "rotation degrees: " << degrees << endl;
+		glPushMatrix();
+		glTranslatef(pos[0]/2.0f, pos[1]/2.0f, pos[2] );
+		glRotatef(-1 * degrees, 0, 0, 1);
+		glScalef(1, len / size, 1);
+		glutSolidCube(size);
+		glPopMatrix();
 		
-		Vector3f pos = temp_vec[i];//  position of particle i. YOUR CODE HERE
+		//  position of particle i. YOUR CODE HERE
 		glPushMatrix();
 		glTranslatef(pos[0], pos[1], pos[2] );
 		glutSolidSphere(0.075f,10.0f,10.0f);

@@ -153,10 +153,14 @@ namespace
         }
         case 'r':
         {
-            system = new PendulumSystem(system_swap_count); 
-            //glutSwapBuffers();
-            stepSystem();
-            
+            if (system_swap_count == 0) {
+                system = new SimpleSystem();
+                stepSystem();
+            } else {
+                system = new PendulumSystem(system_swap_count); 
+                //glutSwapBuffers();
+                stepSystem();
+            }
             
             break;
         }
