@@ -1,6 +1,6 @@
 Derek Dorr
 CPSC 566
-04/18/2024
+04/20/2024
 
 INSTRUCTIONS:
  . navigate to project directory and execute: ./assignment_3
@@ -11,6 +11,8 @@ INSTRUCTIONS:
  . press 't' to swap between particle simulations
 
  . press 'r' to reset current particle simulation
+
+ . press 'h' for the help menu
 
  . to compile, simply navigate to the project direcory and execute 'make'
 
