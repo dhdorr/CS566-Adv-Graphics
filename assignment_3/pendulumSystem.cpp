@@ -192,18 +192,23 @@ void PendulumSystem::draw()
 		float radians = atan2(pos[0], pos[1]);
 		float degrees = radians * 180.0f / M_PI;
 		float size = 0.1f;
-		float dx = 0 - pos[0];
-		float dy = 0 - pos[1];
+		float initial_x = 0;
+		float initial_y = 0;
+		float dx = initial_x - pos[0];
+		float dy = initial_y - pos[1];
 		if (i > 0) {
 			int temp = i - 1;
-			dx = temp_vec[temp][0] - pos[0];
-			dy = temp_vec[temp][1] - pos[1];
+			initial_x = temp_vec[temp][0];
+			initial_y = temp_vec[temp][1];
+			dx = initial_x - pos[0];
+			dy = initial_y - pos[1];
 		}
 		float len = sqrt(dx*dx + dy*dy);
 		cout << "len: " << len << endl;
 		cout << "rotation degrees: " << degrees << endl;
 		glPushMatrix();
-		glTranslatef(pos[0]/2.0f, pos[1]/2.0f, pos[2] );
+		// glTranslatef(pos[0], pos[1], pos[2] );
+		glTranslatef(initial_x + (-1 * dx / 2.0f), initial_y + (-1 * dy / 2.0f), pos[2] );
 		glRotatef(-1 * degrees, 0, 0, 1);
 		glScalef(1, len / size, 1);
 		glutSolidCube(size);
