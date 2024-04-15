@@ -16,6 +16,7 @@ public:
 	void draw();
 
 	vector<Vector3f> getConnectedParticles(vector<Vector3f> state, int s);
+	vector<Vector3f> getConnectedParticles_Show(vector<Vector3f> state, int s);
 
 private:
 

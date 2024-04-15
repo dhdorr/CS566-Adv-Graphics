@@ -33,8 +33,8 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 	float mass = 0.01f;
 	float gravity_acceleration = -1.0f * 9.8f;
 	float drag_constant = 5.1f;
-	float spring_constant = 100.0f;
-	float spring_dampening = 0.01f;
+	float spring_constant = 1.0f;
+	float spring_dampening = 1.0f;
 	float rest_length = 0.5f;
 
 	for (int s = 0; s < state.size(); s += 2) {
@@ -45,8 +45,8 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		force_y += mass * gravity_acceleration;
 
 		// VISCOUS DRAG
-		// force_y += -1.0f * drag_constant * (state[s + 1][1]);
-		// force_x += -1.0f * drag_constant * state[s + 1][0];
+		force_y += -1.0f * drag_constant * (state[s + 1][1]);
+		force_x += -1.0f * drag_constant * state[s + 1][0];
 
 		// SPRING FORCE >:(
 		/*****************
@@ -60,19 +60,21 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		vector<Vector3f> connected_states = getConnectedParticles(state, s);
 
 
-		cout << "\nParticle - " << s / 2 << " :: ";
+		// cout << "\nParticle - " << s / 2 << " :: ";
 		for (int c = 0; c < connected_states.size(); c++) {
 			force_y += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
 			force_x += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
-			cout << c << ", ";
+			// cout << c << ", ";
 		}
 
 		// Calculate force to anchors
-		if (s == 0 || s == 4) {
+		if (s == 0 || s == 4 ) {
 			//connected_states.push_back(Vector3f(0));
 			force_x = 0;
 			force_y = 0;
 		}
+		// force_x = 0;
+		// force_y = 0;
 	
 
 		// push back velocity then sum of forces
@@ -98,7 +100,7 @@ void ClothSystem::draw()
 
 		// draw line
 		Vector3f prev_particle = Vector3f(0);
-		vector<Vector3f> connected_states = getConnectedParticles(cloth_particles, p);
+		vector<Vector3f> connected_states = getConnectedParticles_Show(cloth_particles, p);
 
 
 		for (int c = 0; c < connected_states.size(); c++) {
@@ -123,26 +125,6 @@ void ClothSystem::draw()
 			glPopMatrix();
 		}
 
-		// Calculate spring to 2nd anchor
-		// if (p >= cloth_particles.size() - 2) {
-
-		// 	Vector3f spring_position = Vector3f((cloth_particles[p][0] + 2.0f) / 2, (cloth_particles[p][1]) / 2, 0);
-
-		// 	float dx = cloth_particles[p][0] - 2.0f;
-		// 	float dy = cloth_particles[p][1];
-
-		// 	float len = sqrt(pow(dx, 2) + pow(dy, 2));
-		// 	float size = 0.1f;
-		// 	float radians = atan2(dx, dy);
-		// 	float degrees = -1 * radians * 180.0f / M_PI;
-
-		// 	glPushMatrix();
-		// 	glTranslatef(spring_position[0], spring_position[1], spring_position[2]);
-		// 	glRotatef(degrees, 0, 0, 1);
-		// 	glScalef(1, len / size, 1);
-		// 	glutSolidCube(size);
-		// 	glPopMatrix();
-		// }
 	}
 
 
@@ -166,11 +148,37 @@ vector<Vector3f> ClothSystem::getConnectedParticles(vector<Vector3f> state, int 
 			connected_states.push_back(state[t]);
 		}
 		// flexion springs
-		// int test_index_s = abs(current_index - other_index);
-		// if (test_index_s == 2 || test_index_s == 6 || test_index_s == 8) {
-		// 	connected_states.push_back(state[t]);
-		// 	cout << "\nFLEXIONS " << s << " | index: " << current_index << " | other index: " << other_index << endl; 
+		int test_index_s = abs(current_index - other_index);
+		if (test_index_s == 2 || test_index_s == 6 || test_index_s == 8) {
+			if (test_index_s == 2 && (current_index % 3 != 0 || other_index % 3 != 0) ) {
+				// cout << current_index << " " << other_index << endl;
+				continue;
+			}
+			connected_states.push_back(state[t]);
+			// cout << "\nFLEXIONS " << s << " | index: " << current_index << " | other index: " << other_index << endl; 
+		}
+	}
+
+	return connected_states;
+}
+
+vector<Vector3f> ClothSystem::getConnectedParticles_Show(vector<Vector3f> state, int s) {
+	vector<Vector3f> connected_states;
+
+	for (int t = 0; t < state.size(); t += 2){
+		int current_index = s/2;
+		int other_index = t/2;
+		// if (abs(current_index - other_index) > 4) {
+		// 	continue;
 		// }
+		if (current_index == other_index) {
+			continue;
+		}
+		// structural and shear springs
+		if (abs((current_index % 3) - (other_index % 3)) <= 1) {
+			// cout << "\nHELLO!? " << "true!" << " | index: " << current_index << " | other index: " << other_index << endl; 
+			connected_states.push_back(state[t]);
+		}
 	}
 
 	return connected_states;
