@@ -37,11 +37,11 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 {
 	vector<Vector3f> f;
 
-	float mass = 0.001f;
+	float mass = 0.011f;
 	float gravity_acceleration = -1.0f * 9.8f;
 	float drag_constant = 0.01f;
-	float spring_constant = 1.8f;
-	float spring_dampening = 0.005f;
+	float spring_constant = 0.1f;
+	float spring_dampening = 0.015f;
 	float rest_length = 0.5f;
 
 	for (int s = 0; s < state.size(); s += 2) {
@@ -51,9 +51,9 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 		// GRAVITY
 		force_y += mass * gravity_acceleration;
 
-		// // VISCOUS DRAG
-		// force_y += -1.0f * drag_constant * (state[s + 1][1]);
-		// force_x += -1.0f * drag_constant * state[s + 1][0];
+		// VISCOUS DRAG
+		force_y += -1.0f * drag_constant * (state[s + 1][1]);
+		force_x += -1.0f * drag_constant * state[s + 1][0];
 
 		// SPRING FORCE >:(
 		/*****************
@@ -74,19 +74,20 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 			float dx = connected_states[c][0] - state[s][0];
 			float dy = connected_states[c][1] - state[s][1];
 			float len = sqrt(dx * dx + dy * dy);
+
+			SpringForce[1] += 1.0f * spring_constant * (((connected_states[c][1] - state[s][1]) * 2) - rest_length);
+			SpringForce[0] += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
 			
 			// SpringForce[1] += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
-			SpringForce[1] += 1.0f * spring_constant * (len - rest_length) * spring_dampening * (dy / len);
-			SpringForce[0] *= (dy / len);
-			SpringForce[0] += (spring_constant * (len - rest_length)) * spring_dampening * (dx / len); 
-			SpringForce[0] *= (dx / len);
+			// SpringForce[1] *= -(dy / len);
+			// SpringForce[1] += 1.0f * spring_constant * (len - rest_length) * spring_dampening * (dy / len);
+			// SpringForce[1] += spring_dampening * (state[s + 1][1] - connected_velocities[c][1]) * (dy / len);
+			// SpringForce[0] += (spring_constant * (len - rest_length) * (dx / len)) * spring_dampening; 
+			SpringForce[0] *= -(dx / len) * spring_dampening;
+
 			// force_y += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
 			// force_x += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
 			// cout << "Spring Force: "; SpringForce.print();
-
-			// VISCOUS DRAG
-			force_y += 1.0f * drag_constant * (state[s + 1][1] - connected_velocities[c][1]);
-			force_x += -1.0f * drag_constant * state[s + 1][0] - connected_velocities[c][0];
 		}
 		force_y += SpringForce[1];
 		force_x += SpringForce[0];
