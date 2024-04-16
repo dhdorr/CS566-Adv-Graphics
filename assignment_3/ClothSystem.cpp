@@ -134,6 +134,84 @@ void ClothSystem::draw()
 
 	}
 
+	glBegin(GL_TRIANGLES);
+ 
+    for (int k = 0; k < 1; k += 3) {
+		Vector3f cvA = cloth_particles[0];
+		Vector3f cvB = cloth_particles[2];
+		Vector3f cvC = cloth_particles[6];
+        // glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+
+		 cvA = cloth_particles[2];
+		 cvB = cloth_particles[4];
+		 cvC = cloth_particles[8];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+
+		 cvA = cloth_particles[4];
+		 cvB = cloth_particles[8];
+		 cvC = cloth_particles[10];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+		
+		 cvA = cloth_particles[6];
+		 cvB = cloth_particles[8];
+		 cvC = cloth_particles[12];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+
+		 cvA = cloth_particles[8];
+		 cvB = cloth_particles[10];
+		 cvC = cloth_particles[14];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+
+		 cvA = cloth_particles[10];
+		 cvB = cloth_particles[16];
+		 cvC = cloth_particles[14];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+		
+		cvA = cloth_particles[12];
+		cvB = cloth_particles[14];
+		cvC = cloth_particles[8];
+		// glNormal3d(normA.x(), normA.y(), normA.z());
+        glVertex3f(cvA.x(), cvA.y(), cvA.z());
+        // glNormal3d(normB.x(), normB.y(), normB.z());
+        glVertex3f(cvB.x(), cvB.y(), cvB.z());
+        // glNormal3d(normC.x(), normC.y(), normC.z());
+        glVertex3f(cvC.x(), cvC.y(), cvC.z());
+		
+
+    }
+
+	glEnd();
+
 
 }
 
