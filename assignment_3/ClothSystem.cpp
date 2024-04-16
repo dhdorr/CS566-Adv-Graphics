@@ -77,17 +77,8 @@ vector<Vector3f> ClothSystem::evalF(vector<Vector3f> state)
 
 			SpringForce[1] += 1.0f * spring_constant * (((connected_states[c][1] - state[s][1]) * 2) - rest_length);
 			SpringForce[0] += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
-			
-			// SpringForce[1] += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
-			// SpringForce[1] *= -(dy / len);
-			// SpringForce[1] += 1.0f * spring_constant * (len - rest_length) * spring_dampening * (dy / len);
-			// SpringForce[1] += spring_dampening * (state[s + 1][1] - connected_velocities[c][1]) * (dy / len);
-			// SpringForce[0] += (spring_constant * (len - rest_length) * (dx / len)) * spring_dampening; 
-			SpringForce[0] *= -(dx / len) * spring_dampening;
 
-			// force_y += 1.0f * spring_constant * ((connected_states[c][1] - state[s][1]) - rest_length) * spring_dampening;
-			// force_x += 1.0f * spring_constant * ((connected_states[c][0] - state[s][0])) * spring_dampening; 
-			// cout << "Spring Force: "; SpringForce.print();
+			SpringForce[0] *= -(dx / len) * spring_dampening;
 		}
 		force_y += SpringForce[1];
 		force_x += SpringForce[0];

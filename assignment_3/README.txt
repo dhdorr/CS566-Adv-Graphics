@@ -27,8 +27,13 @@ REFERENCES:
 PROBLEMS:
 
 1) cloth simulation not quite right. I think its an issue with the springs not repelling eachother but I could not get it to work correctly.
+    I had to fake a repelling spring force by dampening the springs greatly on the x-axis
 
 2) I tried implementing a new spring / particle class but could not get it to work with the starter code
+
+3) On my machine, I sometimes get segmentation faults when running the cloth simulation after making a new build.
+    I also sometimes see crashes when cycling too fast to the cloth simulation. I have no idea why this happens, it is inconsistent.
+    But if my program crashes, please try running it again.
 
 
 SUGGESTIONS:
